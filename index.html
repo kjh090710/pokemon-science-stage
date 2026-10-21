@@ -40,11 +40,12 @@
     .blackout .scene{display:none}
     #gate-canvas{display:none;position:absolute;z-index:1;left:50%;top:50%;width:max(100vw,177.777vh);height:max(56.25vw,100vh);transform:translate(-50%,-50%);pointer-events:none}
     #stage.gate-scene #gate-canvas{display:block}
-    #portal{position:absolute;overflow:hidden;clip-path:polygon(0 32%,5% 25%,13% 18%,22% 11%,35% 4%,50% 0,65% 4%,78% 11%,87% 18%,95% 25%,100% 32%,100% 100%,0 100%);background:transparent}
+    #portal{position:absolute;overflow:hidden;perspective:750px;perspective-origin:50% 42%;clip-path:polygon(0 32%,5% 25%,13% 18%,22% 11%,35% 4%,50% 0,65% 4%,78% 11%,87% 18%,95% 25%,100% 32%,100% 100%,0 100%);background:transparent}
     #stage.door-cleared #gate-canvas{display:none}
-    .gate-half{position:absolute;top:0;bottom:0;width:50%;background-image:url('backgrounds/03-gate-closed.png');background-repeat:no-repeat;transition:transform 2.3s cubic-bezier(.65,0,.25,1)}
-    .gate-left{left:0}.gate-right{right:0}
-    #stage.gate-open .gate-left{transform:translateX(-101%)}#stage.gate-open .gate-right{transform:translateX(101%)}
+    .gate-half{position:absolute;top:0;bottom:0;width:50%;background-image:url('backgrounds/03-gate-closed.png');background-repeat:no-repeat;backface-visibility:hidden;transition:transform 2.3s cubic-bezier(.57,0,.22,1),filter 2.3s cubic-bezier(.57,0,.22,1);will-change:transform}
+    .gate-left{left:0;transform-origin:left center;box-shadow:inset -9px 0 13px #27291e55}
+    .gate-right{right:0;transform-origin:right center;box-shadow:inset 9px 0 13px #27291e55}
+    #stage.gate-open .gate-left{transform:rotateY(-88deg);filter:brightness(.64)}#stage.gate-open .gate-right{transform:rotateY(88deg);filter:brightness(.64)}
     #lake-dark-scene{display:none;position:absolute;inset:0;z-index:1;pointer-events:none;background:url('backgrounds/07-lake-dark.png') center/cover no-repeat;opacity:0;transition:opacity 1.15s ease-in-out}
     #stage.lake-scene #lake-dark-scene{display:block}
     #stage.lake-dark #lake-dark-scene{opacity:1}
