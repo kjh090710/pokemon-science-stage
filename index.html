@@ -29,8 +29,7 @@
     /* 무대 화면: 장면 사진이 주인공이며, 문이 열릴 때만 움직인다. */
     #stage{background:#000!important;cursor:pointer}
     #stage:before{inset:0;z-index:0;filter:none;animation:none;background-image:var(--scene-image);background-size:cover;background-position:center}
-    #stage.lake-scene:before{filter:brightness(.82) saturate(.84);transition:filter 1.15s ease-in-out}
-    #stage.lake-scene.lake-dark:before{filter:brightness(.49) saturate(.66) contrast(1.05)}
+    #stage.lake-scene:before{filter:brightness(.82) saturate(.84)}
     #stage:after{display:none}
     #stage.blackout:before{display:none}
     .scene{z-index:2;transition:none;transform:none!important;pointer-events:none;padding:2vw}
@@ -45,10 +44,10 @@
     .gate-half{position:absolute;top:0;bottom:0;width:50%;background-image:url('backgrounds/03-gate-closed.png');background-repeat:no-repeat;transition:transform 2.3s cubic-bezier(.65,0,.25,1)}
     .gate-left{left:0}.gate-right{right:0}
     #stage.gate-open .gate-left{transform:translateX(-101%)}#stage.gate-open .gate-right{transform:translateX(101%)}
-    #lake-darkening{display:none;position:absolute;inset:0;z-index:1;pointer-events:none;background:#07090c;opacity:0;transition:opacity 1.15s ease-in-out;-webkit-mask-image:url('backgrounds/07-lake-ground-water-mask.png');mask-image:url('backgrounds/07-lake-ground-water-mask.png');-webkit-mask-size:cover;mask-size:cover;-webkit-mask-position:center;mask-position:center}
-    #stage.lake-scene #lake-darkening{display:block}
-    #stage.lake-dark #lake-darkening{opacity:.88}
-    #stage.blackout #lake-darkening{display:none}
+    #lake-dark-scene{display:none;position:absolute;inset:0;z-index:1;pointer-events:none;background:url('backgrounds/07-lake-dark.png') center/cover no-repeat;opacity:0;transition:opacity 1.15s ease-in-out}
+    #stage.lake-scene #lake-dark-scene{display:block}
+    #stage.lake-dark #lake-dark-scene{opacity:1}
+    #stage.blackout #lake-dark-scene{display:none}
     .answer{animation:none}
     #chrome{background:#061126a8;opacity:0}
     #chrome:hover,#chrome:focus-within{opacity:1}
@@ -57,7 +56,7 @@
   </style>
 </head>
 <body>
-  <main id="stage" aria-live="polite"><div id="gate-canvas"><div id="portal"><div class="gate-half gate-left"></div><div class="gate-half gate-right"></div></div></div><div id="lake-darkening" aria-hidden="true"></div><section class="scene on"><div class="content"></div></section></main>
+  <main id="stage" aria-live="polite"><div id="gate-canvas"><div id="portal"><div class="gate-half gate-left"></div><div class="gate-half gate-right"></div></div></div><div id="lake-dark-scene" aria-hidden="true"></div><section class="scene on"><div class="content"></div></section></main>
   <aside id="notes" aria-label="운영 메모"></aside>
   <nav id="chrome" aria-label="공연 조작">
     <button id="prev" title="이전: 왼쪽 화살표">◀ 이전</button><button id="next" title="다음: 오른쪽 화살표 또는 스페이스">다음 ▶</button>
@@ -69,27 +68,34 @@
   <audio id="song" loop preload="auto" src="audio/우리는 모두 친구.mp3"></audio>
   <script>
     const cues=[
-      {chapter:'1장 · 박사님 연구실',bg:'00-lab',note:'사전 준비: 칠판에 UV 종이 부착, 손전등은 로사 주머니, 지우는 몬스터볼. 박사님이 지우와 웅이를 소개하고 두 사람이 모험을 떠날 때까지 유지.'},
-      {chapter:'1장 · 로켓단 등장',bg:'01-town',note:'지우와 웅이가 퇴장하고 로켓단이 등장할 때 클릭. 로켓단 구호가 끝나고 정전될 때까지 유지.'},
-      {chapter:'1장 · UV 단서와 전환 암전',blackout:true,music:'stop',note:'갑자기 불이 꺼질 때 클릭. 로사가 손전등으로 실제 칠판의 “호수” 단서를 비춤. 로켓단 퇴장 뒤 S 키로 「우리는 모두 친구」를 시작. 2장 세팅 완료 후 클릭 한 번으로 다음 배경.'},
-      {chapter:'2장 · 적양배추 만능 지시약',bg:'03-gate',music:'fade',note:'보라색 용액 비커 4개, 식초, 베이킹소다 용액, 안내문. 가짜 메타몽을 찾는 실험 동안 닫힌 문 유지.'},
-      {chapter:'2장 · 문 열림',bg:'03-gate',visual:'door',note:'지우가 “메타몽! 넌 내꺼야!”라고 한 뒤 문 열림 효과음에 맞춰 클릭. 문짝만 열림.'},
-      {chapter:'2장 후 암전',blackout:true,music:'play',note:'3장 루미놀·플루오레세인 실험 세팅. 검은 화면에서 노래 소리만 재생.'},
-      {chapter:'3장 · 바다',bg:'06-sea',music:'fade',note:'루미놀과 플루오레세인 반응, 꼬부기 등장. 이 장에서는 문이 열리지 않음.'},
-      {chapter:'3장 후 암전',blackout:true,music:'play',note:'4장 녹말 용액 호수, 아이오딘, 비타민 C, 플라즈마볼 세팅.'},
-      {chapter:'4장 · 맑은 호수',bg:'07-lake',music:'fade',note:'4장 시작. 로켓단이 아이오딘을 붓기 전까지 맑은 호수를 유지.'},
-      {chapter:'4장 · 검게 변한 호수',bg:'07-lake',lake:'dark',note:'로켓단이 녹말 호수에 아이오딘을 부어 물이 검게 변하는 순간 클릭. 물과 주변 풍경이 함께 어두워짐. 피카츄의 플라즈마볼 장면까지 유지.'},
-      {chapter:'4장 · 다시 맑아진 호수',bg:'07-lake',note:'웅이가 비타민 C 용액을 부어 호수가 맑아지는 순간 클릭. 물이 파랗게 돌아오고 주변 풍경도 다시 밝아짐. 전설의 포켓몬 등장까지 유지.'},
-      {chapter:'5장 · 박사님 연구실로 귀환',bg:'00-lab',note:'지우와 친구들이 박사님 연구실로 돌아와 도감 완성과 마무리. 배우 대사만 진행하고 화면에는 배경만 표시.'},
-      {chapter:'5장 후 암전 · 커튼콜',blackout:true,music:'stop',note:'마무리 후 암전. 로켓단 인사와 커튼콜. 퀴즈쇼를 진행하면 다음 큐로 이동.'},
-      {chapter:'박사님의 포켓몬 퀴즈쇼',bg:'00-lab',note:'대본 5장 이후의 선택 퀴즈. 박사님 연구실을 유지하며 화면에는 문제·정답을 표시하지 않음.'}
+      {chapter:'PPT 1 · 개막 암전',blackout:true,track:'friends',music:'stop',note:'가사가 있는 「우리는 모두 친구」를 외부 음원으로 재생. 노래가 끝나면 다음 클릭으로 연구실, 조명 ON. 음원 파일을 연결했다면 S 키로 시작.'},
+      {chapter:'PPT 1 · 1장 연구실',bg:'00-lab',music:'stop',note:'박사님, 지우, 웅이 등장. 지우와 웅이가 퇴장한 뒤 로켓단이 등장해도 연구실 배경 유지. 칠판 UV 종이와 손전등 준비.'},
+      {chapter:'PPT 2 · UV 단서 암전',blackout:true,music:'stop',note:'갑자기 불이 꺼질 때 클릭. 로사가 실제 칠판에 UV 손전등을 비춰 “호수”를 보여줌. 로켓단 퇴장 후 「우리는 모두 친구」 반주를 별도 재생하거나 S 키로 연결한 파일을 시작. 다음 클릭은 숲길.'},
+      {chapter:'PPT 3–4 · 2장 숲길',bg:'02-route',music:'stop',note:'적양배추 지시약으로 네 비커를 조사. 안내문은 배우가 펼쳐 읽음. 이 배경은 가짜 메타몽을 찾을 때까지 유지.'},
+      {chapter:'PPT 5 직전 · 닫힌 관문',bg:'03-gate',note:'네 번째 비커에서 색이 변하지 않는 가짜 메타몽을 찾은 직후 클릭. 관문 문 열림 효과음을 준비.'},
+      {chapter:'PPT 5 · 문 열림',bg:'03-gate',visual:'door',note:'지우가 메타몽을 잡고 문 열림 효과음이 들리는 순간 클릭. 가운데 문짝만 열림.'},
+      {chapter:'PPT 6 · 2장 후 암전',blackout:true,music:'stop',note:'3장 실험 준비. 대본의 배경 음악은 「route 216」이며 외부에서 재생. 다음 클릭은 바다.'},
+      {chapter:'PPT 7–8 · 3장 바다',bg:'06-sea',music:'stop',note:'바다 도착 및 꼬부기 단서 안내문. 배우가 바닷속 관과 유리병을 발견할 때까지 유지.'},
+      {chapter:'PPT 9 · 첫 번째 실험 암전',blackout:true,music:'stop',note:'루미놀 용액을 관으로 흘려보내 초록빛 반응을 보여줄 때 클릭. 조명 OFF. 반응 확인 뒤 다음 클릭으로 바다.'},
+      {chapter:'PPT 10 · 바다 복귀',bg:'06-sea',note:'조명 ON. 수상한 유리병을 발견하고 두 용액을 섞기 직전까지 유지.'},
+      {chapter:'PPT 11 · 두 번째 실험 암전',blackout:true,music:'stop',note:'두 용액을 섞어 파란빛이 나타나는 순간 클릭. 조명 OFF. 꼬부기가 등장하면 다음 클릭으로 바다.'},
+      {chapter:'PPT 12 · 꼬부기와 바다',bg:'06-sea',note:'꼬부기 등장과 함께 조명 ON. 꼬부기를 잡고 퇴장할 때까지 유지.'},
+      {chapter:'PPT 13 · 3장 후 암전',blackout:true,music:'stop',note:'4장 호수 실험 세팅. 대본의 배경 음악은 「route 216」이며 외부에서 재생.'},
+      {chapter:'PPT 14 · 4장 맑은 호수',bg:'07-lake',music:'stop',note:'로켓단이 나타나 아이오딘을 넣기 전까지 맑은 호수 유지.'},
+      {chapter:'PPT 15 · 검게 변한 호수',bg:'07-lake',lake:'dark',note:'로이가 아이오딘 용액을 넣는 순간 클릭. 호수 물과 주변 풍경이 어두워짐. 피카츄의 플라즈마볼 장면까지 유지.'},
+      {chapter:'PPT 16 · 맑아진 호수',bg:'07-lake',note:'웅이가 비타민 C 용액을 넣는 순간 클릭. 호수가 다시 맑아짐. 전설의 포켓몬 등장 때 대본의 「Farewell」을 외부에서 재생.'},
+      {chapter:'PPT 17 · 4장 후 암전',blackout:true,track:'friends',music:'stop',note:'전설의 포켓몬이 고개를 끄덕인 뒤 클릭. 「우리는 모두 친구」 가사 없는 버전을 외부에서 재생하거나 S 키로 연결한 파일을 시작.'},
+      {chapter:'PPT 18 · 5장 연구실 귀환',bg:'00-lab',music:'stop',note:'지우와 친구들, 전설의 포켓몬이 박사님에게 돌아옴. 조명 ON. 마무리 대사까지 연구실 유지.'},
+      {chapter:'5장 후 · 커튼콜 암전',blackout:true,music:'stop',note:'등장인물 인사와 커튼콜. 조명 OFF. 퀴즈 시작 때 다음 클릭.'},
+      {chapter:'박사님의 포켓몬 퀴즈쇼',bg:'00-lab',note:'퀴즈 1–3번. 화면에는 문제나 정답을 표시하지 않고 박사님 연구실을 유지.'},
+      {chapter:'퀴즈 4번 · 최종 암전',blackout:true,music:'stop',note:'박사님이 플라즈마볼을 켜고 손가락을 가져다대는 마지막 문제에서 클릭. 조명 OFF. 공연 종료까지 검은 화면.'}
     ];
     const stage=document.querySelector('#stage'),scene=stage.querySelector('.scene'),notes=document.querySelector('#notes'),audio=document.querySelector('#song');let index=0,emergency=false,audioURL=null,fadeTimer=null,doorTimer=null;
     function visual(c){if(c.visual==='orbit')return '<div class="orbit"></div>';if(c.visual==='letter')return '<div class="letter">?</div>';if(c.visual==='secret')return '<div class="letter secret">전설의 포켓몬<br>비밀 편지</div>';if(c.visual==='sequence')return '<div class="sequence"><span class="dot green"></span><span class="arrow">→</span><span class="dot yellow"></span><span class="arrow">→</span><span class="dot unknown">?</span><span class="arrow">→</span><span class="dot yellow"></span><span class="arrow">→</span><span class="dot unknown">?</span></div>';if(c.visual==='beaker')return `<div class="beaker"><div class="liquid" style="--liquid:${c.liquid}"></div></div>`;if(c.visual==='door')return '<div class="door"></div>';if(c.visual==='plasma')return '<div class="plasma"></div>';if(c.visual==='luminol')return '<div class="luminol">'+Array.from({length:48},(_,i)=>`<span style="left:${(i*47)%100}%;top:${(i*73)%100}%"></span>`).join('')+'</div>';return ''}
     function setVolume(to,ms=500){clearInterval(fadeTimer);const start=audio.volume,steps=20;let n=0;fadeTimer=setInterval(()=>{n++;audio.volume=Math.max(0,Math.min(1,start+(to-start)*n/steps));if(n>=steps)clearInterval(fadeTimer)},ms/steps)}
     function music(c){if(!audio.src||audio.error)return;if(c.music==='stop'){audio.pause();audio.currentTime=0;audio.volume=0}else if(c.music==='play'){audio.volume=.72;audio.currentTime=0;audio.play().catch(()=>{document.querySelector('#musicStatus').textContent='재생 차단됨 · 노래 버튼을 누르세요'})}else if(c.music==='low'){setVolume(.12);audio.play().catch(()=>{})}else if(c.music==='fade')setVolume(0,1100);updateMusic()}
     function backdropName(c){return c.bg||'01-town'}
-    function setBackdrop(name){const files={'00-lab':'00-lab-sharp.png','01-town':'01-town-ground.png','03-gate':'03-gate-open.png','06-sea':'06-sea-ground.png','07-lake':'07-lake-ground.png'};stage.style.setProperty('--scene-image',`url("backgrounds/${files[name]||name+'.jpg'}")`)}
+    function setBackdrop(name){const files={'00-lab':'00-lab-sharp.png','02-route':'02-route.jpg','03-gate':'03-gate-open.png','06-sea':'06-sea-ground.png','07-lake':'07-lake-ground.png'};stage.style.setProperty('--scene-image',`url("backgrounds/${files[name]||name+'.jpg'}")`)}
     function sizeDoor(){const canvas=document.querySelector('#gate-canvas'),portal=document.querySelector('#portal'),w=canvas.clientWidth,h=canvas.clientHeight,left=w*514/1672,top=h*341/941,width=w*566/1672,height=h*250/941;portal.style.left=`${left}px`;portal.style.top=`${top}px`;portal.style.width=`${width}px`;portal.style.height=`${height}px`;for(const [half,offset] of [[portal.querySelector('.gate-left'),0],[portal.querySelector('.gate-right'),width/2]]){half.style.backgroundSize=`${w}px ${h}px`;half.style.backgroundPosition=`${-(left+offset)}px ${-top}px`}}
     function render(){const c=cues[index];clearTimeout(doorTimer);stage.classList.toggle('blackout',!!c.blackout||emergency);stage.classList.toggle('gate-scene',c.bg==='03-gate');stage.classList.toggle('lake-scene',c.bg==='07-lake');stage.classList.toggle('lake-dark',c.lake==='dark');stage.classList.remove('gate-open','door-cleared');setBackdrop(backdropName(c));if(c.bg==='03-gate')sizeDoor();scene.innerHTML='';scene.classList.add('on');if(c.visual==='door')requestAnimationFrame(()=>requestAnimationFrame(()=>{if(cues[index]!==c)return;stage.classList.add('gate-open');doorTimer=setTimeout(()=>{if(cues[index]===c)stage.classList.add('door-cleared')},2400)}));notes.innerHTML=`<strong>${c.chapter} · 운영 메모</strong><p>${c.note||''}</p><small>화면 클릭 / → / Space: 다음 · ←: 이전 · B: 암전 · F: 전체 화면 · O: 메모 · M: 음악</small>`;document.querySelector('#count').textContent=`${index+1} / ${cues.length}`;music(c)}
     function updateMusic(){document.querySelector('#music').textContent=audio.paused||audio.volume<.05?'♪ 노래 시작':'Ⅱ 일시정지';document.querySelector('#musicStatus').textContent=audio.error?'음원 파일 없음 · 파일 연결 필요':audio.readyState>=2?`음원 준비됨 · 볼륨 ${Math.round(audio.volume*100)}%`:'음원 확인 중'}
@@ -101,7 +107,7 @@
     stage.addEventListener('click',()=>go(1));
     document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();go(1)}else if(e.key==='ArrowLeft')go(-1);else if(e.key.toLowerCase()==='b')document.querySelector('#black').click();else if(e.key.toLowerCase()==='f')document.querySelector('#full').click();else if(e.key.toLowerCase()==='o')document.querySelector('#noteBtn').click();else if(e.key.toLowerCase()==='m')document.querySelector('#music').click();else if(e.key.toLowerCase()==='s')startSong();else if(e.key.toLowerCase()==='c')document.body.classList.toggle('performance');else if(e.key.toLowerCase()==='u')document.querySelector('#freeMusic').click()});
     document.body.classList.add('performance');
-    ['00-lab-sharp.png','01-town-ground.png','03-gate-open.png','03-gate-closed.png','06-sea-ground.png','07-lake-ground.png','07-lake-ground-water-mask.png'].forEach(name=>{const preload=new Image();preload.src=`backgrounds/${name}`});
+    ['00-lab-sharp.png','02-route.jpg','03-gate-open.png','03-gate-closed.png','06-sea-ground.png','07-lake-ground.png','07-lake-dark.png'].forEach(name=>{const preload=new Image();preload.src=`backgrounds/${name}`});
     window.addEventListener('resize',()=>{if(cues[index].bg==='03-gate')sizeDoor()});
     render();
   </script>
