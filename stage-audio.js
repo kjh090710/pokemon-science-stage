@@ -6,7 +6,7 @@ class StageAudio {
     this.urls = urls;
     this.status = status;
     this.masterVolume = .75;
-    this.trackVolumes = Object.fromEntries(Object.keys(tracks).map(key => [key, 1]));
+    this.trackVolumes = Object.fromEntries(Object.entries(tracks).map(([key, track]) => [key, track.volume ?? 1]));
     this.fadeOutMs = STAGE_SHOW.musicFadeOutMs;
     this.fadeDeadline = 0;
     this.envelopeState = {from:1, to:1, start:0, end:0};
@@ -175,8 +175,9 @@ class StageAudio {
     this.stopDoor();
     if (doorWasActive) { this.status('문 효과음 정지'); return; }
     if (!this.activeTrack) return;
+    const operation = ++this.operation;
     if (this.player.paused) {
-      try { await this.unlock(); this.naturalFade = false; this.fadeDeadline = 0; await this.player.play(); this.ramp(1, .3); this.status('음악 재생'); }
+      try { await this.unlock(); if(operation!==this.operation)return; this.naturalFade = false; this.fadeDeadline = 0; await this.player.play(); if(operation!==this.operation)return; this.ramp(1, .3); this.status('음악 재생'); }
       catch { this.status('해당 곡의 재생 버튼을 눌러 주세요.'); }
     } else {
       this.player.pause();

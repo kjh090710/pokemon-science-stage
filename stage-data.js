@@ -40,9 +40,9 @@ window.STAGE_SHOW = Object.freeze({
     {id:'mew-arrival', chapter:'PPT 16 · 뮤 등장', bg:'07-lake', audio:'farewell', actionLabel:'Farewell 재생 · 뮤 등장', note:'같은 호수 화면에서 Farewell 재생. 뮤가 나타나 지우의 말을 듣고 고개를 끄덕이는 순간 다음 버튼으로 음악만 종료.'},
     {id:'mew-agrees', chapter:'PPT 16 · 뮤와 친구가 됨', bg:'07-lake', actionLabel:'Farewell 종료', note:'호수 배경은 유지하고 Farewell만 서서히 종료. 지우의 “해냈다! 드디어 도감을 완성했어!”가 끝난 뒤 다음 버튼으로 PPT 17 암전.'},
     {id:'act4-song', chapter:'PPT 17 · 4장 후 암전', blackout:true, audio:'instrumental', actionLabel:'암전 · 우리는 모두 친구 반주 재생', note:'조명 OFF, 가사 없는 「우리는 모두 친구」 재생. 5장 귀환 준비가 끝나면 다음 버튼으로 연구실·조명 ON.'},
-    {id:'lab-finale', actionLabel:'반주 종료 · 연구실 귀환', chapter:'PPT 18 · 5장 연구실 귀환', bg:'00-lab', note:'조명 ON. 지우 일행과 뮤가 박사님에게 돌아옴. “과학은 작은 호기심에서 시작된다!” 뒤 퇴장하면 다음 버튼으로 암전.'},
-    {id:'curtain', chapter:'5장 후 · 커튼콜 암전', blackout:true, note:'무대 조명 OFF 후 로사·로이 합류. 커튼콜 인사는 현장 조명으로 진행하고 다시 암전, 박사님만 남음. 퀴즈 시작 때 다음 버튼.'},
-    {id:'quiz', chapter:'박사님의 포켓몬 퀴즈쇼', bg:'00-lab', note:'퀴즈 1–3번은 연구실 유지. 문제·정답은 배우가 말함. 마지막 플라즈마볼 문제 직전에 다음 버튼으로 암전.'},
-    {id:'quiz-blackout', chapter:'퀴즈 4번 · 최종 암전', blackout:true, note:'조명 OFF. 박사님이 플라즈마볼을 켜고 손가락을 가져다대며 마지막 퀴즈. 마지막 인사와 공연 종료까지 검은 화면 유지.'}
+    {id:'lab-finale', actionLabel:'연구실 귀환 · 가사 있는 곡 반복 재생', chapter:'PPT 18 · 5장 연구실 귀환', bg:'00-lab', audio:'finale', continuousAudio:true, note:'조명 ON. 반주가 서서히 종료된 뒤 가사 있는 「우리는 모두 친구」를 작은 음량으로 반복 재생. 기본 25%, 음향창의 “5장 이후” 개별 음량으로 조절. 지우 일행과 뮤가 박사님에게 돌아옴. “과학은 작은 호기심에서 시작된다!” 뒤 퇴장하면 다음 버튼으로 암전. 이후 장면에서도 음악은 계속 유지.'},
+    {id:'curtain', actionLabel:'커튼콜 암전 · 배경음 유지', chapter:'5장 후 · 커튼콜 암전', blackout:true, audio:'finale', continuousAudio:true, note:'무대 조명 OFF 후 로사·로이 합류. 커튼콜 인사는 현장 조명으로 진행하고 다시 암전, 박사님만 남음. 작은 음량의 가사 있는 「우리는 모두 친구」는 이어서 반복 재생. 퀴즈 시작 때 다음 버튼.'},
+    {id:'quiz', actionLabel:'퀴즈쇼 · 배경음 유지', chapter:'박사님의 포켓몬 퀴즈쇼', bg:'00-lab', audio:'finale', continuousAudio:true, note:'퀴즈 1–3번은 연구실 유지. 문제·정답은 배우가 말함. 작은 음량의 「우리는 모두 친구」 반복 재생 유지. 마지막 플라즈마볼 문제 직전에 다음 버튼으로 암전.'},
+    {id:'quiz-blackout', actionLabel:'최종 암전 · 배경음 유지', chapter:'퀴즈 4번 · 최종 암전', blackout:true, audio:'finale', continuousAudio:true, note:'조명 OFF. 박사님이 플라즈마볼을 켜고 손가락을 가져다대며 마지막 퀴즈. 마지막 인사와 공연 종료까지 검은 화면, 작은 음량의 「우리는 모두 친구」 반복 재생 유지. 음악을 끝낼 때 제어창의 “서서히 정지”를 누름.'}
   ]
 });
