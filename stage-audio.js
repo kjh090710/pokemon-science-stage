@@ -6,6 +6,7 @@ class StageAudio {
     this.urls = urls;
     this.status = status;
     this.masterVolume = .75;
+    this.trackVolumes = Object.fromEntries(Object.keys(tracks).map(key => [key, 1]));
     this.fadeOutMs = STAGE_SHOW.musicFadeOutMs;
     this.fadeDeadline = 0;
     this.operation = 0;
@@ -34,8 +35,13 @@ class StageAudio {
     this.master = this.ctx.createGain();
     this.master.gain.value = this.masterVolume;
     this.master.connect(this.ctx.destination);
+    this.musicLevel = this.ctx.createGain();
+    this.musicLevel.connect(this.master);
+    this.doorLevel = this.ctx.createGain();
+    this.doorLevel.gain.value = this.trackVolumes.door;
+    this.doorLevel.connect(this.master);
     this.envelope = this.ctx.createGain();
-    this.envelope.connect(this.master);
+    this.envelope.connect(this.musicLevel);
     this.ctx.createMediaElementSource(this.player).connect(this.envelope);
     return this.ctx;
   }
@@ -48,6 +54,14 @@ class StageAudio {
   setVolume(value) {
     this.masterVolume = value;
     if (this.master) this.master.gain.setValueAtTime(value, this.ctx.currentTime);
+  }
+
+  setTrackVolume(key, value) {
+    if (!Object.hasOwn(this.tracks, key) || !Number.isFinite(Number(value))) return;
+    const volume = Math.max(0, Math.min(1, Number(value)));
+    this.trackVolumes[key] = volume;
+    if (this.ctx && key === 'door') this.doorLevel.gain.setValueAtTime(volume, this.ctx.currentTime);
+    else if (this.ctx && key === this.activeTrack) this.musicLevel.gain.setValueAtTime(volume, this.ctx.currentTime);
   }
 
   setFadeOut(milliseconds) {
@@ -102,6 +116,7 @@ class StageAudio {
       this.player.currentTime = 0;
       this.naturalFade = false;
       this.activeTrack = key;
+      this.musicLevel.gain.setValueAtTime(this.trackVolumes[key], this.ctx.currentTime);
       this.envelope.gain.cancelScheduledValues(this.ctx.currentTime);
       this.envelope.gain.setValueAtTime(0, this.ctx.currentTime);
       await this.player.play();
@@ -176,7 +191,7 @@ class StageAudio {
     envelope.gain.linearRampToValueAtTime(1, start + .04);
     envelope.gain.setValueAtTime(1, start + duration - .18);
     envelope.gain.linearRampToValueAtTime(0, start + duration);
-    source.connect(envelope).connect(this.master);
+    source.connect(envelope).connect(this.doorLevel);
     source.onended = () => {
       if (this.doorSource === source) {
         this.doorSource = null;
