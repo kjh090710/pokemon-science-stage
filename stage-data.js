@@ -1,6 +1,6 @@
 // 화면과 제어창이 함께 사용하는 공연 순서와 음향 타이밍입니다.
 window.STAGE_SHOW = Object.freeze({
-  channelName: 'pokemon-stage-v3',
+  channelName: 'pokemon-stage-v3:' + (typeof window.location!=='undefined' ? (new URLSearchParams(window.location.search).get('session')||'main').slice(0,64) : 'main'),
   gateMs: 4000,
   gateLeadMs: 180,
   musicFadeMs: 900,

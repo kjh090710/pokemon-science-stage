@@ -28,6 +28,8 @@
   <script src="stage-data.js?v=cue-sync-1"></script>
   <script src="stage-audio.js?v=cue-sync-1"></script>
   <script>
+    const session=new URLSearchParams(location.search).get('session');
+    if(session){const link=document.querySelector('header a');const url=new URL(link.href);url.searchParams.set('session',session);link.href=url.href}
     const channel=typeof BroadcastChannel==='function'?new BroadcastChannel(STAGE_SHOW.channelName):null;
     const tracks={friends:{label:'우리는 모두 친구 · 가사 있음',loop:false,src:'audio/friends-vocal.mp3'},instrumental:{label:'우리는 모두 친구 · 가사 없음',loop:false,src:'audio/friends-instrumental.mp3'},route:{label:'route 216',loop:true,src:'audio/route-216.mp3'},farewell:{label:'Farewell',loop:false,src:'audio/farewell.mp3'},door:{label:'문 열림 효과음',loop:false,src:'audio/door-open-short.mp3'}};
     const files={},urls=Object.fromEntries(Object.entries(tracks).filter(([,track])=>track.src).map(([key,track])=>[key,track.src]));let state=null,cueOperation=0,gateStartedRevision=null;
