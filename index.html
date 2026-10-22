@@ -41,11 +41,11 @@
     #gate-frames{display:none;position:absolute;z-index:1;inset:0;pointer-events:none}
     #stage.gate-scene.gate-opening #gate-frames{display:block}
     #stage.blackout #gate-frames{display:none}
-    .gate-frame{position:absolute;inset:0;background-position:center;background-size:cover;opacity:0}
-    .gate-frame.partial{background-image:url('backgrounds/03-gate-forest-partial.png');animation:gate-partial 2.4s steps(1,end) forwards}
-    .gate-frame.half{background-image:url('backgrounds/03-gate-forest-half.png');animation:gate-half 2.4s steps(1,end) forwards}
-    @keyframes gate-partial{0%,22%{opacity:0}23%,100%{opacity:1}}
-    @keyframes gate-half{0%,60%{opacity:0}61%,100%{opacity:1}}
+    .gate-frame{position:absolute;inset:0;background-position:center;background-size:cover;opacity:0;mask-image:radial-gradient(ellipse 22% 26% at 50% 49%,#000 66%,transparent 100%)}
+    .gate-frame.partial{background-image:url('backgrounds/03-gate-forest-partial.png');animation:gate-partial 3.2s ease-in-out forwards}
+    .gate-frame.half{background-image:url('backgrounds/03-gate-forest-half.png');animation:gate-half 3.2s ease-in-out forwards}
+    @keyframes gate-partial{0%,8%{opacity:0}47%,100%{opacity:1}}
+    @keyframes gate-half{0%,43%{opacity:0}100%{opacity:1}}
     #lake-dark-scene{display:none;position:absolute;inset:0;z-index:1;pointer-events:none;background:url('backgrounds/07-lake-pokemon-dark.png') center/cover no-repeat;opacity:0;transition:opacity 1.15s ease-in-out}
     #stage.lake-scene #lake-dark-scene{display:block}
     #stage.lake-dark #lake-dark-scene{opacity:1}
