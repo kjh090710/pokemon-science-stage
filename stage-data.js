@@ -9,7 +9,9 @@ window.STAGE_SHOW = Object.freeze({
     '02-route': '02-route-pokemon.png',
     '03-gate': '03-gate-forest-closed.png',
     '06-sea': '06-sea-pokemon.png',
-    '07-lake': '07-lake-pink.png'
+    '07-lake': '07-lake-pink.png',
+    'instruction-metamon': 'instruction-metamon.jpg',
+    'instruction-squirtle': 'instruction-squirtle.jpg'
   },
   cues: [
     {id:'standby', chapter:'공연 시작 대기', blackout:true, actionLabel:'공연 시작 대기', note:'칠판에 UV 종이를 붙이고 로사의 주머니에 손전등을 준비. 지우는 몬스터볼을 준비. 공연 화면과 무대 조명 모두 암전. 다음 버튼으로 개막곡 재생.'},
@@ -17,11 +19,15 @@ window.STAGE_SHOW = Object.freeze({
     {id:'lab-intro', actionLabel:'개막곡 종료 · 연구실로', chapter:'PPT 1 · 1장 연구실', bg:'00-lab', note:'조명 ON. 박사님·지우·웅이 소개. 지우와 웅이 퇴장 뒤 로켓단 등장까지 연구실 유지.'},
     {id:'uv-blackout', chapter:'PPT 2 · UV 단서 암전', blackout:true, note:'갑자기 불이 꺼질 때 클릭. 실제 칠판의 UV 단서 “호수”를 보여주며 암전 유지. 로켓단이 퇴장한 뒤 다음 버튼으로 반주 재생.'},
     {id:'act1-song', chapter:'PPT 2 · 1장 후 반주', blackout:true, audio:'instrumental', actionLabel:'우리는 모두 친구 · 가사 없음 재생', note:'칠판 정리와 2장 실험 세팅 동안 반주 재생, 암전 유지. 다음 버튼으로 숲길을 띄우며 조명 ON.'},
-    {id:'forest', actionLabel:'반주 종료 · 숲길로', chapter:'PPT 3–4 · 2장 숲길', bg:'02-route', note:'조명 ON. 보라색 용액 비커 4개·식초·베이킹소다·안내문 준비. 안내문은 배우가 펼쳐 읽음. 가짜 메타몽을 찾을 때까지 이 배경 유지.'},
+    {id:'forest', actionLabel:'반주 종료 · 숲길로', chapter:'PPT 3 · 2장 숲길', bg:'02-route', note:'조명 ON. 보라색 용액 비커 4개·식초·베이킹소다·지시문 준비. 지우가 막다른 길을 발견하고 웅이가 지시문을 찾음. 지우의 “뭐라고 적혀 있는데?” 뒤 웅이가 지시문을 펼치는 순간 다음 버튼.'},
+    {id:'metamon-instruction', chapter:'PPT 4 · 메타몽 지시문', bg:'instruction-metamon', instruction:true, actionLabel:'메타몽 지시문 보기', note:'웅이가 지시문을 펼치며 “똑같은 모습으로 숨어 있는 메타몽 중 가짜 메타몽을 찾아라! 진짜와 가짜를 구별해야만 길이 열릴 것이다!”를 읽는 동안 제공된 지시문 이미지를 유지. 다 읽고 “저기 테이블 위에 있는 유리병들을 봐!”라고 할 때 다음 버튼.'},
+    {id:'forest-experiment', chapter:'PPT 4 이후 · 메타몽 실험', bg:'02-route', actionLabel:'지시문 닫기 · 숲길로', note:'배우들이 테이블에 다가가면 숲길 유지. 메타몽 탐지약 설명 뒤 지우가 첫 비커에 식초를 넣는 빨간색 반응부터 두 번째 파란색·세 번째 노란색(또는 초록색)·네 번째 무변화까지 실제 실험을 진행. 웅이가 “찾았다! 바로 마지막, 너였구나!”라고 할 때 다음 버튼으로 닫힌 관문.'},
     {id:'gate-closed', chapter:'PPT 5 · 닫힌 관문', bg:'03-gate', note:'웅이가 마지막 가짜 메타몽을 가리킬 때 클릭. 지우가 메타몽을 잡은 직후 다음 버튼으로 문과 효과음을 동시에 시작.'},
     {id:'gate-open', chapter:'PPT 5 · 문 열림', bg:'03-gate', visual:'door', audio:'door', actionLabel:'문 열기 · 효과음 재생', note:'문 열림과 효과음이 동시에 시작해 4초 뒤 함께 끝남. 반쯤 열린 상태 유지. 지우·웅이와 로켓단이 모두 퇴장하면 다음 버튼.'},
     {id:'act2-song', chapter:'PPT 6 · 2장 후 암전', blackout:true, audio:'route', actionLabel:'암전 · Route 216 재생', note:'조명 OFF. Route 216 재생. 테이블 외곽의 실험 장치를 가운데로 옮겨 3장 준비. 다음 버튼으로 바다와 조명 ON.'},
-    {id:'sea-arrival', actionLabel:'Route 216 종료 · 바다로', chapter:'PPT 7–8 · 3장 바다', bg:'06-sea', note:'조명 ON. 바다 도착과 꼬부기 단서 안내문. 배우가 안내문을 펼쳐 읽음. 꼬부기를 함께 부른 뒤 다음 버튼으로 첫 실험 암전.'},
+    {id:'sea-arrival', actionLabel:'Route 216 종료 · 바다로', chapter:'PPT 7 · 3장 바다', bg:'06-sea', note:'조명 ON. 지우와 웅이가 바다에 도착. 웅이의 “여기도 지시문이 놓여있는데? 한번 펼쳐 볼게.” 뒤 지시문을 펼치는 순간 다음 버튼.'},
+    {id:'squirtle-instruction', chapter:'PPT 8 · 꼬부기 지시문', bg:'instruction-squirtle', instruction:true, actionLabel:'꼬부기 지시문 보기', note:'웅이가 지시문을 펼치며 “어두운 바닷속에 꼬부기가 숨어 있다! 꼬부기가 남긴 흔적을 밝혀라!”를 읽는 동안 제공된 지시문 이미지를 유지. 다 읽고 지우가 주변을 살피며 이상한 관을 발견하기 전에 다음 버튼.'},
+    {id:'sea-search', chapter:'PPT 8 이후 · 꼬부기 탐색', bg:'06-sea', actionLabel:'지시문 닫기 · 바다로', note:'바다 화면에서 지우와 웅이가 관과 유리병을 발견. 관객과 “꼬부기야!”를 함께 부른 뒤 다음 버튼으로 PPT 9 암전·조명 OFF. 암전 후 용액을 관에 흘려 첫 플루오레세인 초록빛 실험 진행.'},
     {id:'fluorescein', chapter:'PPT 9 · 플루오레세인 암전', blackout:true, note:'조명 OFF 후 용액을 관에 흘려보냄. 플루오레세인의 초록빛을 확인하고 꼬부기 소리를 들은 뒤 다음 버튼으로 바다·조명 ON.'},
     {id:'sea-return', chapter:'PPT 10 · 바다 복귀', bg:'06-sea', note:'조명 ON. 웅이가 두 번째 유리병을 발견하고 섞기 직전에 다음 버튼으로 암전.'},
     {id:'luminol', chapter:'PPT 11 · 루미놀 암전', blackout:true, note:'조명 OFF 후 두 용액을 섞어 파란빛을 보여줌. 꼬부기가 등장하는 순간 다음 버튼으로 바다·조명 ON.'},
