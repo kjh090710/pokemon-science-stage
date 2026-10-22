@@ -9,6 +9,7 @@ class StageAudio {
     this.trackVolumes = Object.fromEntries(Object.keys(tracks).map(key => [key, 1]));
     this.fadeOutMs = STAGE_SHOW.musicFadeOutMs;
     this.fadeDeadline = 0;
+    this.envelopeState = {from:1, to:1, start:0, end:0};
     this.operation = 0;
     this.doorOperation = 0;
     this.activeTrack = null;
@@ -16,12 +17,14 @@ class StageAudio {
     this.player.onended = () => {
       if (!this.activeTrack) return;
       this.activeTrack = null;
+      this.fadeDeadline = 0;
       this.status('음악 재생 완료');
     };
     this.player.ontimeupdate = () => {
       const left = this.player.duration - this.player.currentTime;
-      if (this.activeTrack && !this.player.loop && !this.naturalFade && left > 0 && left <= this.fadeOutMs / 1000) {
+      if (this.activeTrack && !this.player.loop && !this.naturalFade && !this.fadeDeadline && left > 0 && left <= this.fadeOutMs / 1000) {
         this.naturalFade = true;
+        this.fadeDeadline = this.ctx.currentTime + left;
         this.ramp(0, left);
       }
     };
@@ -68,13 +71,33 @@ class StageAudio {
     this.fadeOutMs = Math.max(500, Math.min(8000, Number(milliseconds) || STAGE_SHOW.musicFadeOutMs));
   }
 
+  envelopeValueAt(time = this.ctx.currentTime) {
+    const state = this.envelopeState;
+    if (time <= state.start) return state.from;
+    if (time >= state.end || state.end <= state.start) return state.to;
+    return state.from + (state.to - state.from) * (time - state.start) / (state.end - state.start);
+  }
+
+  setEnvelope(value) {
+    if (!this.envelope) return;
+    const now = this.ctx.currentTime;
+    const gain = this.envelope.gain;
+    gain.cancelScheduledValues(now);
+    gain.setValueAtTime(value, now);
+    this.envelopeState = {from:value, to:value, start:now, end:now};
+  }
+
   ramp(value, seconds) {
     if (!this.envelope) return;
-    const gain = this.envelope.gain;
     const now = this.ctx.currentTime;
-    if (gain.cancelAndHoldAtTime) gain.cancelAndHoldAtTime(now);
-    else { const current = gain.value; gain.cancelScheduledValues(now); gain.setValueAtTime(current, now); }
+    const gain = this.envelope.gain;
+    const current = this.envelopeValueAt(now);
+    // 이전 램프가 끝난 뒤에도 반드시 '지금의 음량'을 새 시작점으로 고정합니다.
+    // 시작점 없이 종료만 예약하면 과거 이벤트부터 계산되어 첫 순간 음량이 뛰어내립니다.
+    gain.cancelScheduledValues(now);
+    gain.setValueAtTime(current, now);
     gain.linearRampToValueAtTime(value, now + seconds);
+    this.envelopeState = {from:current, to:value, start:now, end:now+seconds};
   }
 
   async stopMusic(fadeMs = this.fadeOutMs) {
@@ -105,6 +128,7 @@ class StageAudio {
       if (!this.player.paused) {
         const remaining = (this.fadeDeadline - this.ctx.currentTime) * 1000;
         const fadeMs = remaining > 0 ? remaining : this.fadeOutMs;
+        this.fadeDeadline = this.ctx.currentTime + fadeMs / 1000;
         this.ramp(0, fadeMs / 1000);
         await new Promise(resolve => setTimeout(resolve, fadeMs));
         if (operation !== this.operation) return;
@@ -117,8 +141,7 @@ class StageAudio {
       this.naturalFade = false;
       this.activeTrack = key;
       this.musicLevel.gain.setValueAtTime(this.trackVolumes[key], this.ctx.currentTime);
-      this.envelope.gain.cancelScheduledValues(this.ctx.currentTime);
-      this.envelope.gain.setValueAtTime(0, this.ctx.currentTime);
+      this.setEnvelope(0);
       await this.player.play();
       if (operation !== this.operation) return;
       this.ramp(1, STAGE_SHOW.musicFadeMs / 1000);
@@ -153,7 +176,7 @@ class StageAudio {
     if (doorWasActive) { this.status('문 효과음 정지'); return; }
     if (!this.activeTrack) return;
     if (this.player.paused) {
-      try { await this.unlock(); this.naturalFade = false; await this.player.play(); this.ramp(1, .3); this.status('음악 재생'); }
+      try { await this.unlock(); this.naturalFade = false; this.fadeDeadline = 0; await this.player.play(); this.ramp(1, .3); this.status('음악 재생'); }
       catch { this.status('해당 곡의 재생 버튼을 눌러 주세요.'); }
     } else {
       this.player.pause();
