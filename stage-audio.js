@@ -6,6 +6,8 @@ class StageAudio {
     this.urls = urls;
     this.status = status;
     this.masterVolume = .75;
+    this.fadeOutMs = STAGE_SHOW.musicFadeOutMs;
+    this.fadeDeadline = 0;
     this.operation = 0;
     this.doorOperation = 0;
     this.activeTrack = null;
@@ -17,7 +19,7 @@ class StageAudio {
     };
     this.player.ontimeupdate = () => {
       const left = this.player.duration - this.player.currentTime;
-      if (this.activeTrack && !this.player.loop && !this.naturalFade && left > 0 && left < 1.25) {
+      if (this.activeTrack && !this.player.loop && !this.naturalFade && left > 0 && left <= this.fadeOutMs / 1000) {
         this.naturalFade = true;
         this.ramp(0, left);
       }
@@ -48,6 +50,10 @@ class StageAudio {
     if (this.master) this.master.gain.setValueAtTime(value, this.ctx.currentTime);
   }
 
+  setFadeOut(milliseconds) {
+    this.fadeOutMs = Math.max(500, Math.min(8000, Number(milliseconds) || STAGE_SHOW.musicFadeOutMs));
+  }
+
   ramp(value, seconds) {
     if (!this.envelope) return;
     const gain = this.envelope.gain;
@@ -57,9 +63,12 @@ class StageAudio {
     gain.linearRampToValueAtTime(value, now + seconds);
   }
 
-  async stopMusic(fadeMs = STAGE_SHOW.musicFadeMs) {
+  async stopMusic(fadeMs = this.fadeOutMs) {
     const operation = ++this.operation;
     if (!this.player.paused && fadeMs > 0) {
+      const remaining = (this.fadeDeadline - this.ctx.currentTime) * 1000;
+      if (remaining > 0) fadeMs = Math.min(fadeMs, remaining);
+      this.fadeDeadline = this.ctx.currentTime + fadeMs / 1000;
       this.ramp(0, fadeMs / 1000);
       await new Promise(resolve => setTimeout(resolve, fadeMs));
     }
@@ -67,6 +76,7 @@ class StageAudio {
     this.player.pause();
     this.player.currentTime = 0;
     this.activeTrack = null;
+    this.fadeDeadline = 0;
     return true;
   }
 
@@ -79,11 +89,14 @@ class StageAudio {
       await this.unlock();
       if (operation !== this.operation) return;
       if (!this.player.paused) {
-        this.ramp(0, .25);
-        await new Promise(resolve => setTimeout(resolve, 250));
+        const remaining = (this.fadeDeadline - this.ctx.currentTime) * 1000;
+        const fadeMs = remaining > 0 ? remaining : this.fadeOutMs;
+        this.ramp(0, fadeMs / 1000);
+        await new Promise(resolve => setTimeout(resolve, fadeMs));
         if (operation !== this.operation) return;
       }
       this.player.pause();
+      this.fadeDeadline = 0;
       this.player.src = this.urls[key];
       this.player.loop = this.tracks[key].loop;
       this.player.currentTime = 0;
@@ -115,7 +128,7 @@ class StageAudio {
 
   async stop() {
     this.stopDoor();
-    this.status('음향을 서서히 종료하는 중');
+    this.status(`음향을 서서히 종료하는 중 · ${(this.fadeOutMs / 1000).toFixed(1)}초`);
     if (await this.stopMusic()) this.status('음향 정지');
   }
 

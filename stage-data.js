@@ -4,6 +4,7 @@ window.STAGE_SHOW = Object.freeze({
   gateMs: 4000,
   gateLeadMs: 180,
   musicFadeMs: 900,
+  musicFadeOutMs: 2500,
   images: {
     '00-lab': '00-lab-professor.png',
     '02-route': '02-route-pokemon.png',

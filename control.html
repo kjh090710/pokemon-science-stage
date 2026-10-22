@@ -12,22 +12,26 @@
     .audio-help{padding:17px 24px 12px;color:var(--muted);font-size:12px;line-height:1.7}.sound-list{padding:0 24px}.sound{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:16px 0;border-bottom:1px solid var(--line)}.sound strong{font-size:13px;font-weight:600}.sound small{display:block;color:#8290a5;max-width:265px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:6px;font-size:11px}.sound input{grid-column:1/3;width:100%;font-size:11px;color:#77869d}.sound input::file-selector-button{font:inherit;border:1px solid #d9e3f0;color:#4c6385;background:#f5f8fd;border-radius:5px;padding:6px 10px;margin-right:10px;cursor:pointer}.sound button{padding:9px 14px;font-size:12px;background:#edf4ff;color:var(--mint);border-color:#d6e5ff}.sound button:hover{background:#dfeaff}.sound-controls{display:flex;align-items:center;gap:9px;padding:20px 24px 14px;flex-wrap:wrap}.sound-controls button{padding:9px 12px;font-size:12px}.sound-controls label{margin-left:auto;color:#6f7f98;font-size:11px}.sound-controls input{width:85px;accent-color:var(--mint)}#soundStatus{margin:0 24px 18px;padding:11px 13px;border-radius:7px;background:#f0f5fd;color:#54709a;font-size:12px;line-height:1.5}.foot{padding:0 24px 23px;color:#8390a4;font-size:11px;line-height:1.8}.foot a{color:#2563eb;display:inline-block;margin-top:8px}
     @media(max-width:900px){header{padding:22px;flex-wrap:wrap;gap:14px}header a{margin-left:auto}main{grid-template-columns:1fr;padding:0 22px 26px;gap:20px}.preview{height:32vw;min-height:180px}.now p{min-height:0}}
     @media(max-width:480px){header{padding:18px}header h1{font-size:18px}header a{margin-left:0}#connection{font-size:11px}main{padding:0 14px 20px}.now{padding:22px}.actions{padding:0 22px 16px}.sound-controls label{margin-left:0}.shortcuts{gap:9px;font-size:10px}}
+    #toggleSound{background:#edf4ff;border:1px solid #d6e5ff;color:#2563eb;font-size:12px;padding:11px 14px;white-space:nowrap}
+    .fade-setting{margin:0 24px 18px;padding:14px 0 0;border-top:1px solid var(--line)}.fade-setting>div{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#63718a}.fade-setting output{font-weight:700;color:#2563eb;font-variant-numeric:tabular-nums}.fade-setting input{width:100%;margin:12px 0 5px;accent-color:#2563eb}.fade-setting small{display:block;font-size:11px;color:#8390a4}
+    .preview{height:clamp(210px,31vw,400px)}main.audio-collapsed{grid-template-columns:minmax(0,1fr)}main.audio-collapsed .preview{height:clamp(300px,58vh,650px)}[hidden]{display:none!important}
+    @media(max-width:480px){main.audio-collapsed .preview{height:42vh;min-height:210px}#toggleSound{padding:9px 12px}}
     .preview.instruction{background-size:contain;background-repeat:no-repeat;background-color:#11151c}
     button:disabled{opacity:.4;cursor:default;transform:none}
     @media(prefers-reduced-motion:reduce){*{transition:none!important}}
   </style>
 </head>
 <body>
-  <header><div><h1>공연 장면·음향 제어창</h1><p>이 창은 노트북에, 공연 화면은 빔에 배치하세요.</p></div><span id="connection">공연 화면 연결 대기 중</span><a href="index.html?v=guide-sync-1" target="pokemon-stage">공연 화면 열기 ↗</a></header>
+  <header><div><h1>공연 장면·음향 제어창</h1><p>이 창은 노트북에, 공연 화면은 빔에 배치하세요.</p></div><span id="connection">공연 화면 연결 대기 중</span><button id="toggleSound" aria-controls="soundPanel" aria-expanded="true">음향 접기</button><a href="index.html?v=show-controls-1" target="pokemon-stage">공연 화면 열기 ↗</a></header>
   <main>
     <div>
       <section class="panel"><h2>장면 진행</h2><div class="preview black" id="preview" aria-label="현재 장면 미리보기"><span class="preview-label">공연 화면 미리보기</span></div><div class="now"><div class="eyebrow" id="position">— / —</div><h3 id="current">공연 화면을 열어 주세요</h3><p id="note">공연 화면과 같은 브라우저에서 열면 자동으로 연결됩니다.</p><div class="next" id="upcoming"></div></div><div class="actions"><button id="prev">◀ 이전</button><button class="primary" id="next">다음 장면 ▶</button><button class="danger" id="blackout">긴급 암전</button></div><div class="shortcuts"><span><kbd>←</kbd> 이전</span><span><kbd>→</kbd> 다음</span><span><kbd>B</kbd> 긴급 암전</span></div></section>
     </div>
-    <section class="panel"><h2>음향 재생</h2><div class="audio-help">큰 진행 버튼에 다음 동작이 표시됩니다. 음악 재생·종료 차례에는 배경을 유지하며 음향을 조작합니다. 아래 재생 버튼으로도 언제든 직접 조작할 수 있습니다.</div><div class="sound-list" id="soundList"></div><div class="sound-controls"><button id="pause">일시정지</button><button id="stop">서서히 정지</button><label for="volume">볼륨</label><input id="volume" type="range" min="0" max="100" value="75"></div><div id="soundStatus" role="status">음악 4곡 · 문 효과음 재생 준비 완료</div><div class="foot">음악은 약 1초 동안 서서히 시작·종료됩니다. 뮤가 고개를 끄덕일 때 「Farewell 종료」를 누르고, 지우의 마지막 대사 뒤 다음 암전으로 진행하세요. 문 효과음은 문 동작과 4초 동안 함께 재생됩니다. 파일 선택으로 기본 음원을 바꿀 수 있습니다. <a href="music-control.html" target="pokemon-original-song" >무료 원곡 조작창 열기</a></div></section>
+    <section class="panel" id="soundPanel"><h2>음향 재생</h2><div class="audio-help">큰 진행 버튼에 다음 동작이 표시됩니다. 음악 재생·종료 차례에는 배경을 유지하며 음향을 조작합니다. 아래 재생 버튼으로도 언제든 직접 조작할 수 있습니다.</div><div class="sound-list" id="soundList"></div><div class="sound-controls"><button id="pause">일시정지</button><button id="stop">서서히 정지</button><label for="volume">볼륨</label><input id="volume" type="range" min="0" max="100" value="75"></div><div class="fade-setting"><div><label for="fadeOut">페이드아웃 시간</label><output id="fadeOutValue" for="fadeOut">2.5초</output></div><input id="fadeOut" type="range" min="0.5" max="8" step="0.5" value="2.5" aria-label="음악 페이드아웃 시간"><small>음악을 종료할 때 볼륨이 줄어드는 시간</small></div><div id="soundStatus" role="status">음악 4곡 · 문 효과음 재생 준비 완료</div><div class="foot">음악은 서서히 시작되며, 종료 시간은 위 슬라이더로 조절할 수 있습니다. 뮤가 고개를 끄덕일 때 「Farewell 종료」를 누르고, 지우의 마지막 대사 뒤 다음 암전으로 진행하세요. 문 효과음은 문 동작과 4초 동안 함께 재생됩니다. 파일 선택으로 기본 음원을 바꿀 수 있습니다. <a href="music-control.html" target="pokemon-original-song" >무료 원곡 조작창 열기</a></div></section>
   </main>
   <audio id="player" preload="auto"></audio>
-  <script src="stage-data.js?v=guide-sync-1"></script>
-  <script src="stage-audio.js?v=guide-sync-1"></script>
+  <script src="stage-data.js?v=show-controls-1"></script>
+  <script src="stage-audio.js?v=show-controls-1"></script>
   <script>
     const session=new URLSearchParams(location.search).get('session');
     if(session){const link=document.querySelector('header a');const url=new URL(link.href);url.searchParams.set('session',session);link.href=url.href}
@@ -36,6 +40,19 @@
     const files={},urls=Object.fromEntries(Object.entries(tracks).filter(([,track])=>track.src).map(([key,track])=>[key,track.src]));let state=null,cueOperation=0,gateStartedRevision=null;
     const player=document.querySelector('#player'),status=document.querySelector('#soundStatus');
     const sound=new StageAudio(player,tracks,urls,text=>status.textContent=text);
+    const settings={fadeOut:'pokemon-stage-fade-out-seconds',collapsed:'pokemon-stage-audio-collapsed'};
+    const readSetting=key=>{try{return localStorage.getItem(key)}catch{return null}};
+    const saveSetting=(key,value)=>{try{localStorage.setItem(key,String(value))}catch{}};
+    const fadeOut=document.querySelector('#fadeOut'),fadeOutValue=document.querySelector('#fadeOutValue');
+    const savedFade=Number(readSetting(settings.fadeOut));
+    const initialFade=Number.isFinite(savedFade)&&savedFade>=.5&&savedFade<=8?savedFade:STAGE_SHOW.musicFadeOutMs/1000;
+    function applyFade(seconds){sound.setFadeOut(seconds*1000);fadeOut.value=String(seconds);fadeOutValue.textContent=`${seconds.toFixed(1)}초`;fadeOut.setAttribute('aria-valuetext',`${seconds.toFixed(1)}초`)}
+    applyFade(initialFade);
+    fadeOut.oninput=()=>{const seconds=Number(fadeOut.value);applyFade(seconds);saveSetting(settings.fadeOut,seconds)};
+    const toggleSound=document.querySelector('#toggleSound');
+    function setSoundCollapsed(collapsed){document.querySelector('main').classList.toggle('audio-collapsed',collapsed);document.querySelector('#soundPanel').hidden=collapsed;toggleSound.setAttribute('aria-expanded',String(!collapsed));toggleSound.textContent=collapsed?'음향 펼치기':'음향 접기'}
+    setSoundCollapsed(readSetting(settings.collapsed)==='true');
+    toggleSound.onclick=()=>{const collapsed=toggleSound.getAttribute('aria-expanded')==='true';setSoundCollapsed(collapsed);saveSetting(settings.collapsed,collapsed)};
     sound.prepareDoor().catch(()=>{status.textContent='문 효과음을 준비하지 못했습니다. 파일 연결을 확인해 주세요.'});
     const soundList=document.querySelector('#soundList');
     for(const [key,track] of Object.entries(tracks)){
