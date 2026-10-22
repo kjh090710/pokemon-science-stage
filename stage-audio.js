@@ -144,7 +144,7 @@ class StageAudio {
       this.setEnvelope(0);
       await this.player.play();
       if (operation !== this.operation) return;
-      this.ramp(1, STAGE_SHOW.musicFadeMs / 1000);
+      this.ramp(1, (this.tracks[key].fadeInMs ?? STAGE_SHOW.musicFadeMs) / 1000);
       this.status(`재생 중 · ${this.tracks[key].label}`);
     } catch {
       if (operation === this.operation) {
