@@ -31,7 +31,7 @@
     body.performance,body.performance *{cursor:none!important}
     #stage:before{inset:0;z-index:0;filter:none;animation:none;background-image:var(--scene-image);background-size:cover;background-position:center}
     #stage.lake-scene:before{filter:brightness(.9) saturate(.9)}
-    #stage.instruction-scene:before{background-size:contain;background-repeat:no-repeat;background-color:#11151c;filter:none}
+    #stage.instruction-scene:before{background-size:contain;background-position:right center;background-repeat:no-repeat;background-color:#11151c;filter:none}
     #stage:after{display:none}
     #stage.blackout:before{display:none}
     .scene{z-index:2;transition:none;transform:none!important;pointer-events:none;padding:2vw}
@@ -64,7 +64,7 @@
     <button id="black" title="긴급 암전: B">● 암전</button><button id="full" title="전체 화면: F">전체 화면</button><button id="noteBtn" title="운영 메모: O">메모</button>
     <button id="openControl" title="별도 장면·음향 제어창 열기">제어창 열기</button><span id="count"></span>
   </nav>
-  <script src="stage-data.js?v=show-controls-2"></script>
+  <script src="stage-data.js?v=projection-right-1"></script>
   <script>
     const cues=STAGE_SHOW.cues;
     const stage=document.querySelector('#stage'),scene=stage.querySelector('.scene'),notes=document.querySelector('#notes');let index=0,emergency=false,revision=0;
@@ -110,7 +110,7 @@
       publishState();
     }
     function go(delta){const target=Math.max(0,Math.min(cues.length-1,index+delta));if(target===index)return;index=target;emergency=false;revision++;render()}
-    document.querySelector('#prev').onclick=()=>go(-1);document.querySelector('#next').onclick=()=>go(1);document.querySelector('#black').onclick=()=>{emergency=!emergency;stage.classList.toggle('blackout',emergency||!!cues[index].blackout);if(cues[index].visual==='door'){cancelGate();gateProgress(1)}publishState()};document.querySelector('#full').onclick=()=>{if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen()};document.querySelector('#noteBtn').onclick=()=>notes.classList.toggle('on');document.querySelector('#openControl').onclick=()=>{const url=new URL('control.html?v=show-controls-2',location.href);const session=new URLSearchParams(location.search).get('session');if(session)url.searchParams.set('session',session);window.open(url.href,'pokemon-stage-control','width=1150,height=850')};
+    document.querySelector('#prev').onclick=()=>go(-1);document.querySelector('#next').onclick=()=>go(1);document.querySelector('#black').onclick=()=>{emergency=!emergency;stage.classList.toggle('blackout',emergency||!!cues[index].blackout);if(cues[index].visual==='door'){cancelGate();gateProgress(1)}publishState()};document.querySelector('#full').onclick=()=>{if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen()};document.querySelector('#noteBtn').onclick=()=>notes.classList.toggle('on');document.querySelector('#openControl').onclick=()=>{const url=new URL('control.html?v=projection-right-1',location.href);const session=new URLSearchParams(location.search).get('session');if(session)url.searchParams.set('session',session);window.open(url.href,'pokemon-stage-control','width=1150,height=850')};
     channel?.addEventListener('message',e=>{
       const m=e.data;
       if(m?.type==='hello'){publishState();return}
