@@ -1,5 +1,6 @@
 /tmp/
-/audio/
+/audio/*
+!/audio/friends-vocal.mp3
 /backgrounds/originals/
 /backgrounds/*
 !/backgrounds/00-lab-sharp.png
