@@ -1,0 +1,603 @@
+{
+  "title": "캐치캐치: 포켓몬을 잡아라!",
+  "description": "28개 장면과 실제 공연 음향이 연결된 포켓몬 과학 연극 템플릿",
+  "document": {
+    "schemaVersion": 1,
+    "scenes": [
+      {
+        "id": "standby",
+        "title": "공연 시작 대기",
+        "note": "칠판에 UV 종이를 붙이고 로사의 주머니에 손전등을 준비. 지우는 몬스터볼을 준비. 공연 화면과 무대 조명 모두 암전. 다음 버튼으로 개막곡 재생.",
+        "background": null,
+        "blackout": true,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "cut",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "stop"
+        }
+      },
+      {
+        "id": "opening-song",
+        "title": "PPT 1 · 개막곡",
+        "note": "가사 있는 「우리는 모두 친구」가 서서히 커지며 재생. 노래가 끝날 때까지 암전 유지. 다음 버튼은 연구실 화면과 조명 ON 시점.",
+        "background": null,
+        "blackout": true,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "cut",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "play",
+          "trackId": "track-friends"
+        }
+      },
+      {
+        "id": "lab-intro",
+        "title": "PPT 1 · 1장 연구실",
+        "note": "조명 ON. 박사님·지우·웅이 소개. 지우와 웅이 퇴장 뒤 로켓단 등장까지 연구실 유지.",
+        "background": {
+          "type": "url",
+          "url": "/templates/pokemon/backgrounds/00-lab-professor.png"
+        },
+        "blackout": false,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "fade",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "stop"
+        }
+      },
+      {
+        "id": "uv-blackout",
+        "title": "PPT 2 · UV 단서 암전",
+        "note": "갑자기 불이 꺼질 때 클릭. 실제 칠판의 UV 단서 “호수”를 보여주며 암전 유지. 로켓단이 퇴장한 뒤 다음 버튼으로 반주 재생.",
+        "background": null,
+        "blackout": true,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "cut",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "stop"
+        }
+      },
+      {
+        "id": "act1-song",
+        "title": "PPT 2 · 1장 후 반주",
+        "note": "칠판 정리와 2장 실험 세팅 동안 반주 재생, 암전 유지. 다음 버튼으로 닫힌 관문을 띄우며 조명 ON.",
+        "background": null,
+        "blackout": true,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "cut",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "play",
+          "trackId": "track-instrumental"
+        }
+      },
+      {
+        "id": "forest",
+        "title": "PPT 3 · 2장 관문 앞",
+        "note": "조명 ON. 보라색 용액 비커 4개·식초·베이킹소다·지시문 준비. 지우가 막다른 길을 발견하고 웅이가 지시문을 찾음. 지우의 “뭐라고 적혀 있는데?” 뒤 웅이가 지시문을 펼치는 순간 다음 버튼.",
+        "background": {
+          "type": "url",
+          "url": "/templates/pokemon/backgrounds/03-gate-forest-closed.png"
+        },
+        "blackout": false,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "fade",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "stop"
+        }
+      },
+      {
+        "id": "metamon-instruction",
+        "title": "PPT 4 · 메타몽 지시문",
+        "note": "웅이가 지시문을 펼치며 “똑같은 모습으로 숨어 있는 메타몽 중 가짜 메타몽을 찾아라! 진짜와 가짜를 구별해야만 길이 열릴 것이다!”를 읽는 동안 제공된 지시문 이미지를 유지. 다 읽고 “저기 테이블 위에 있는 유리병들을 봐!”라고 할 때 다음 버튼.",
+        "background": {
+          "type": "url",
+          "url": "/templates/pokemon/backgrounds/instruction-metamon.jpg"
+        },
+        "blackout": false,
+        "fit": "contain",
+        "position": "right",
+        "transition": {
+          "kind": "fade",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "stop"
+        }
+      },
+      {
+        "id": "forest-experiment",
+        "title": "PPT 4 이후 · 메타몽 실험·포획",
+        "note": "지시문을 닫고 처음과 같은 닫힌 관문 배경 유지. 배우들이 테이블에 다가가 메타몽 탐지약을 설명한 뒤 지우가 첫 비커에 식초를 넣는 빨간색 반응부터 두 번째 파란색·세 번째 노란색(또는 초록색)·네 번째 무변화까지 실제 실험을 진행. 웅이가 “찾았다! 바로 마지막, 너였구나!”라고 해도 화면을 넘기지 않고 포획까지 같은 관문 유지. 지우가 메타몽을 잡은 직후 다음 버튼을 한 번 눌러 문 열림과 효과음을 동시에 시작.",
+        "background": {
+          "type": "url",
+          "url": "/templates/pokemon/backgrounds/03-gate-forest-closed.png"
+        },
+        "blackout": false,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "fade",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "stop"
+        }
+      },
+      {
+        "id": "gate-open",
+        "title": "PPT 5 · 문 열림",
+        "note": "문 열림과 효과음이 동시에 시작해 4초 뒤 함께 끝남. 반쯤 열린 상태 유지. 지우·웅이와 로켓단이 모두 퇴장하면 다음 버튼.",
+        "background": {
+          "type": "url",
+          "url": "/templates/pokemon/backgrounds/03-gate-forest-closed.png"
+        },
+        "blackout": false,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "fade",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "play",
+          "trackId": "track-door"
+        },
+        "effect": {
+          "type": "gate",
+          "frames": [
+            {
+              "type": "url",
+              "url": "/templates/pokemon/backgrounds/03-gate-forest-partial.png"
+            },
+            {
+              "type": "url",
+              "url": "/templates/pokemon/backgrounds/03-gate-forest-half.png"
+            }
+          ],
+          "durationMs": 4000
+        }
+      },
+      {
+        "id": "act2-song",
+        "title": "PPT 6 · 2장 후 암전",
+        "note": "조명 OFF. Route 216 재생. 테이블 외곽의 실험 장치를 가운데로 옮겨 3장 준비. 다음 버튼으로 바다와 조명 ON.",
+        "background": null,
+        "blackout": true,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "cut",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "play",
+          "trackId": "track-route"
+        }
+      },
+      {
+        "id": "sea-arrival",
+        "title": "PPT 7 · 3장 바다",
+        "note": "조명 ON. 지우와 웅이가 바다에 도착. 웅이의 “여기도 지시문이 놓여있는데? 한번 펼쳐 볼게.” 뒤 지시문을 펼치는 순간 다음 버튼.",
+        "background": {
+          "type": "url",
+          "url": "/templates/pokemon/backgrounds/06-sea-pokemon.png"
+        },
+        "blackout": false,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "fade",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "stop"
+        }
+      },
+      {
+        "id": "squirtle-instruction",
+        "title": "PPT 8 · 꼬부기 지시문",
+        "note": "웅이가 지시문을 펼치며 “어두운 바닷속에 꼬부기가 숨어 있다! 꼬부기가 남긴 흔적을 밝혀라!”를 읽는 동안 제공된 지시문 이미지를 유지. 다 읽고 지우가 주변을 살피며 이상한 관을 발견하기 전에 다음 버튼.",
+        "background": {
+          "type": "url",
+          "url": "/templates/pokemon/backgrounds/instruction-squirtle.jpg"
+        },
+        "blackout": false,
+        "fit": "contain",
+        "position": "right",
+        "transition": {
+          "kind": "fade",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "stop"
+        }
+      },
+      {
+        "id": "sea-search",
+        "title": "PPT 8 이후 · 꼬부기 탐색",
+        "note": "바다 화면에서 지우와 웅이가 관과 유리병을 발견. 관객과 “꼬부기야!”를 함께 부른 뒤 다음 버튼으로 PPT 9 암전·조명 OFF. 암전 후 용액을 관에 흘려 첫 플루오레세인 초록빛 실험 진행.",
+        "background": {
+          "type": "url",
+          "url": "/templates/pokemon/backgrounds/06-sea-pokemon.png"
+        },
+        "blackout": false,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "fade",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "stop"
+        }
+      },
+      {
+        "id": "fluorescein",
+        "title": "PPT 9 · 플루오레세인 암전",
+        "note": "조명 OFF 후 용액을 관에 흘려보냄. 플루오레세인의 초록빛을 확인하고 꼬부기 소리를 들은 뒤 다음 버튼으로 바다·조명 ON.",
+        "background": null,
+        "blackout": true,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "cut",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "stop"
+        }
+      },
+      {
+        "id": "sea-return",
+        "title": "PPT 10 · 바다 복귀",
+        "note": "조명 ON. 웅이가 두 번째 유리병을 발견하고 섞기 직전에 다음 버튼으로 암전.",
+        "background": {
+          "type": "url",
+          "url": "/templates/pokemon/backgrounds/06-sea-pokemon.png"
+        },
+        "blackout": false,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "fade",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "stop"
+        }
+      },
+      {
+        "id": "luminol",
+        "title": "PPT 11 · 루미놀 암전",
+        "note": "조명 OFF 후 두 용액을 섞어 파란빛을 보여줌. 꼬부기가 등장하는 순간 다음 버튼으로 바다·조명 ON.",
+        "background": null,
+        "blackout": true,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "cut",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "stop"
+        }
+      },
+      {
+        "id": "squirtle",
+        "title": "PPT 12 · 꼬부기와 바다",
+        "note": "꼬부기 등장과 동시에 조명 ON. 꼬부기를 잡고 지우 일행이 퇴장하면 다음 버튼.",
+        "background": {
+          "type": "url",
+          "url": "/templates/pokemon/backgrounds/06-sea-pokemon.png"
+        },
+        "blackout": false,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "fade",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "stop"
+        }
+      },
+      {
+        "id": "act3-song",
+        "title": "PPT 13 · 3장 후 암전",
+        "note": "조명 OFF, Route 216 재생. 아이오딘 시약의 황금빛 용액·녹말·비타민 C 용액과 플라즈마볼로 4장 호수 실험 세팅.",
+        "background": null,
+        "blackout": true,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "cut",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "play",
+          "trackId": "track-route"
+        }
+      },
+      {
+        "id": "lake-clear",
+        "title": "PPT 14 · 4장 황금빛 호수",
+        "note": "조명 ON. 아이오딘 시약의 색에 맞춘 황금빛 호수 유지. 로켓단이 등장한 뒤 녹말을 넣어 청람색으로 변하는 순간 다음 버튼.",
+        "background": {
+          "type": "url",
+          "url": "/templates/pokemon/backgrounds/07-lake-gold.png"
+        },
+        "blackout": false,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "fade",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "stop"
+        }
+      },
+      {
+        "id": "lake-dark",
+        "title": "PPT 15 · 검게 변한 호수",
+        "note": "녹말을 넣는 순간 클릭. 황금빛 호수가 검은빛이 도는 짙은 청람색으로 변하고 주변 풍경도 함께 어두워짐. 피카츄 등장 후 무대 앞쪽 두 줄 조명 OFF → 백만 볼트에 조명 점멸과 플라즈마볼 돌진 동시 → 로켓단 퇴장 뒤 조명 모두 ON. 이 동안 검은 청람빛 호수 유지. 비타민 C를 넣을 때 다음 버튼.",
+        "background": {
+          "type": "url",
+          "url": "/templates/pokemon/backgrounds/07-lake-pokemon-dark.png"
+        },
+        "blackout": false,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "fade",
+          "durationMs": 1150
+        },
+        "audio": {
+          "action": "stop"
+        }
+      },
+      {
+        "id": "lake-restored",
+        "title": "PPT 16 · 맑아진 핑크빛 호수",
+        "note": "비타민 C를 넣는 순간 클릭. 검은 청람빛 호수가 흰빛을 담은 연한 핑크색으로 맑아짐. 관객 반응 뒤 웅이가 “호수에서 뭔가 나오고 있어!”라고 할 때 다음 버튼으로 Farewell 재생.",
+        "background": {
+          "type": "url",
+          "url": "/templates/pokemon/backgrounds/07-lake-pink.png"
+        },
+        "blackout": false,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "fade",
+          "durationMs": 1150
+        },
+        "audio": {
+          "action": "stop"
+        }
+      },
+      {
+        "id": "mew-arrival",
+        "title": "PPT 16 · 뮤 등장",
+        "note": "같은 호수 화면에서 Farewell 재생. 뮤가 나타나 지우의 말을 듣고 고개를 끄덕이는 순간 다음 버튼으로 음악만 종료.",
+        "background": {
+          "type": "url",
+          "url": "/templates/pokemon/backgrounds/07-lake-pink.png"
+        },
+        "blackout": false,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "fade",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "play",
+          "trackId": "track-farewell"
+        }
+      },
+      {
+        "id": "mew-agrees",
+        "title": "PPT 16 · 뮤와 친구가 됨",
+        "note": "호수 배경은 유지하고 Farewell만 서서히 종료. 지우의 “해냈다! 드디어 도감을 완성했어!”가 끝난 뒤 다음 버튼으로 PPT 17 암전.",
+        "background": {
+          "type": "url",
+          "url": "/templates/pokemon/backgrounds/07-lake-pink.png"
+        },
+        "blackout": false,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "fade",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "stop"
+        }
+      },
+      {
+        "id": "act4-song",
+        "title": "PPT 17 · 4장 후 암전",
+        "note": "조명 OFF, 가사 없는 「우리는 모두 친구」 재생. 5장 귀환 준비가 끝나면 다음 버튼으로 연구실·조명 ON.",
+        "background": null,
+        "blackout": true,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "cut",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "play",
+          "trackId": "track-instrumental"
+        }
+      },
+      {
+        "id": "lab-finale",
+        "title": "PPT 18 · 5장 연구실 귀환",
+        "note": "조명 ON. 반주가 서서히 종료된 뒤 가사 있는 「우리는 모두 친구」를 작은 음량으로 반복 재생. 기본 25%, 음향창의 “5장 이후” 개별 음량으로 조절. 지우 일행과 뮤가 박사님에게 돌아옴. “과학은 작은 호기심에서 시작된다!” 뒤 퇴장하면 다음 버튼으로 암전. 이후 장면에서도 음악은 계속 유지.",
+        "background": {
+          "type": "url",
+          "url": "/templates/pokemon/backgrounds/00-lab-professor.png"
+        },
+        "blackout": false,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "fade",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "play",
+          "trackId": "track-finale"
+        }
+      },
+      {
+        "id": "curtain",
+        "title": "5장 후 · 커튼콜 암전",
+        "note": "무대 조명 OFF 후 로사·로이 합류. 커튼콜 인사는 현장 조명으로 진행하고 다시 암전, 박사님만 남음. 작은 음량의 가사 있는 「우리는 모두 친구」는 이어서 반복 재생. 퀴즈 시작 때 다음 버튼.",
+        "background": null,
+        "blackout": true,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "cut",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "keep"
+        }
+      },
+      {
+        "id": "quiz",
+        "title": "박사님의 포켓몬 퀴즈쇼",
+        "note": "퀴즈 1–3번은 연구실 유지. 문제·정답은 배우가 말함. 작은 음량의 「우리는 모두 친구」 반복 재생 유지. 마지막 플라즈마볼 문제 직전에 다음 버튼으로 암전.",
+        "background": {
+          "type": "url",
+          "url": "/templates/pokemon/backgrounds/00-lab-professor.png"
+        },
+        "blackout": false,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "fade",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "keep"
+        }
+      },
+      {
+        "id": "quiz-blackout",
+        "title": "퀴즈 4번 · 최종 암전",
+        "note": "조명 OFF. 박사님이 플라즈마볼을 켜고 손가락을 가져다대며 마지막 퀴즈. 마지막 인사와 공연 종료까지 검은 화면, 작은 음량의 「우리는 모두 친구」 반복 재생 유지. 음악을 끝낼 때 제어창의 “서서히 정지”를 누름.",
+        "background": null,
+        "blackout": true,
+        "fit": "cover",
+        "position": "center",
+        "transition": {
+          "kind": "cut",
+          "durationMs": 500
+        },
+        "audio": {
+          "action": "keep"
+        }
+      }
+    ],
+    "tracks": [
+      {
+        "id": "track-friends",
+        "label": "우리는 모두 친구 · 가사 있음",
+        "source": {
+          "type": "url",
+          "url": "/templates/pokemon/audio/friends-vocal.mp3"
+        },
+        "loop": false,
+        "volume": 1,
+        "fadeInMs": 900
+      },
+      {
+        "id": "track-instrumental",
+        "label": "우리는 모두 친구 · 피아노 반주",
+        "source": {
+          "type": "url",
+          "url": "/templates/pokemon/audio/friends-instrumental-piano-tight.mp3"
+        },
+        "loop": false,
+        "volume": 1,
+        "fadeInMs": 20
+      },
+      {
+        "id": "track-route",
+        "label": "Route 216",
+        "source": {
+          "type": "url",
+          "url": "/templates/pokemon/audio/route-216.mp3"
+        },
+        "loop": true,
+        "volume": 1,
+        "fadeInMs": 900
+      },
+      {
+        "id": "track-farewell",
+        "label": "Farewell",
+        "source": {
+          "type": "url",
+          "url": "/templates/pokemon/audio/farewell.mp3"
+        },
+        "loop": false,
+        "volume": 1,
+        "fadeInMs": 900
+      },
+      {
+        "id": "track-door",
+        "label": "문 열림 효과음",
+        "source": {
+          "type": "url",
+          "url": "/templates/pokemon/audio/door-open-short.mp3"
+        },
+        "loop": false,
+        "volume": 1,
+        "fadeInMs": 0
+      },
+      {
+        "id": "track-finale",
+        "label": "5장 이후 · 우리는 모두 친구 반복",
+        "source": {
+          "type": "url",
+          "url": "/templates/pokemon/audio/friends-vocal.mp3"
+        },
+        "loop": true,
+        "volume": 0.25,
+        "fadeInMs": 900
+      }
+    ],
+    "settings": {
+      "aspectRatio": "16:9",
+      "masterVolume": 0.75,
+      "fadeOutMs": 2500
+    }
+  }
+}
