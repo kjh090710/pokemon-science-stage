@@ -20,6 +20,7 @@ export function Editor({ show, mediaUrls, onChange, onTitleChange, onSave, savin
   const [selectedId, setSelectedId] = useState(document.scenes[0]?.id || '');
   const [tab, setTab] = useState<'scene'|'audio'>('scene');
   const [uploading, setUploading] = useState<'image'|'audio'|null>(null);
+  const [replacingTrackId, setReplacingTrackId] = useState<string|null>(null);
   const [uploadError, setUploadError] = useState<string|null>(null);
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<DeleteTarget|null>(null);
@@ -30,8 +31,12 @@ export function Editor({ show, mediaUrls, onChange, onTitleChange, onSave, savin
   const [previewRevision, setPreviewRevision] = useState(0);
   const imageInput = useRef<HTMLInputElement>(null);
   const trackInput = useRef<HTMLInputElement>(null);
+  const replaceTrackInput = useRef<HTMLInputElement>(null);
+  const replaceTrackTarget = useRef<string|null>(null);
+  const uploadBusy = useRef(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const previewOperation = useRef(0);
+  const previewSourceTrackId = useRef<string|null>(null);
   const cancelDeleteRef = useRef<HTMLButtonElement>(null);
   const deleteDialogRef = useRef<HTMLElement>(null);
   const scene = document.scenes.find(item => item.id === selectedId) || document.scenes[0];
@@ -61,7 +66,7 @@ export function Editor({ show, mediaUrls, onChange, onTitleChange, onSave, savin
 
   useEffect(() => {
     const audio = audioRef.current;
-    return () => { audio?.pause(); };
+    return () => { ++previewOperation.current; audio?.pause(); };
   }, []);
 
   useEffect(() => {
@@ -86,6 +91,16 @@ export function Editor({ show, mediaUrls, onChange, onTitleChange, onSave, savin
   }
   function patchTrack(id:string, patch:Partial<Track>) {
     update(current => ({...current, tracks:current.tracks.map(item => item.id === id ? {...item,...patch} : item)}));
+  }
+  function cancelTrackPreview(id:string) {
+    if (previewSourceTrackId.current !== id) return;
+    ++previewOperation.current;
+    const audio = audioRef.current;
+    audio?.pause();
+    audio?.removeAttribute('src');
+    audio?.load();
+    previewSourceTrackId.current = null;
+    setPreviewTrackId(null);
   }
   function selectScene(id:string) { setSelectedId(id); setLibraryOpen(false); setPreviewStartAt(undefined); }
   function addScene() {
@@ -143,36 +158,61 @@ export function Editor({ show, mediaUrls, onChange, onTitleChange, onSave, savin
       update(value => ({...value,scenes}));
       if (scene?.id === deleteTarget.id) selectScene(scenes[Math.min(index, scenes.length - 1)].id);
     } else {
-      if (previewTrackId === deleteTarget.id) { audioRef.current?.pause(); setPreviewTrackId(null); }
+      cancelTrackPreview(deleteTarget.id);
       update(current => ({...current,tracks:current.tracks.filter(item => item.id !== deleteTarget.id),scenes:current.scenes.map(item => item.audio.trackId === deleteTarget.id ? {...item,audio:{action:'stop'}} : item)}));
     }
     setDeleteTarget(null);
   }
   async function uploadImage(file:File) {
-    if (!scene) return;
+    if (!scene || uploadBusy.current) return;
     const targetId = scene.id;
+    uploadBusy.current = true;
     setUploading('image'); setUploadError(null);
     try { const background = await onUpload(file); patchScene(targetId,{background,blackout:false,effect:undefined}); }
     catch (cause) { setUploadError(cause instanceof Error ? cause.message : '이미지를 업로드하지 못했습니다. 다시 시도해 주세요.'); }
-    finally { setUploading(null); }
+    finally { uploadBusy.current = false; setUploading(null); }
   }
   async function uploadTrack(file:File) {
+    if (uploadBusy.current) return;
+    uploadBusy.current = true;
     setUploading('audio'); setUploadError(null);
     try {
       const source = await onUpload(file);
       const track:Track = {id:newId(),label:file.name.replace(/\.[^.]+$/,''),source,volume:.8,loop:false,fadeInMs:900};
       update(current => ({...current,tracks:[...current.tracks,track]}));
     } catch (cause) { setUploadError(cause instanceof Error ? cause.message : '음원을 업로드하지 못했습니다. 다시 시도해 주세요.'); }
-    finally { setUploading(null); }
+    finally { uploadBusy.current = false; setUploading(null); }
+  }
+  function chooseReplacement(id:string) {
+    if (uploadBusy.current) return;
+    replaceTrackTarget.current = id;
+    if (replaceTrackInput.current) {
+      replaceTrackInput.current.value = '';
+      replaceTrackInput.current.click();
+    }
+  }
+  async function replaceTrack(id:string, file:File) {
+    if (uploadBusy.current || !latest.current.tracks.some(track => track.id === id)) return;
+    uploadBusy.current = true;
+    setUploading('audio'); setReplacingTrackId(id); setUploadError(null);
+    cancelTrackPreview(id);
+    try {
+      const source = await onUpload(file);
+      cancelTrackPreview(id);
+      update(current => current.tracks.some(track => track.id === id)
+        ? {...current,tracks:current.tracks.map(track => track.id === id ? {...track,source} : track)}
+        : current);
+    } catch (cause) { setUploadError(cause instanceof Error ? cause.message : '음원을 교체하지 못했습니다. 다시 시도해 주세요.'); }
+    finally { uploadBusy.current = false; setUploading(null); setReplacingTrackId(null); }
   }
   async function previewTrack(track:Track) {
     const audio = audioRef.current;
     if (!audio) return;
     const operation = ++previewOperation.current;
-    if (previewTrackId === track.id && !audio.paused) { audio.pause(); setPreviewTrackId(null); return; }
+    if (previewSourceTrackId.current === track.id && !audio.paused) { audio.pause(); previewSourceTrackId.current=null; setPreviewTrackId(null); return; }
     const url = mediaUrl(track.source,mediaUrls);
     if (!url) { setUploadError('음원을 불러오는 중입니다. 잠시 후 다시 재생해 주세요.'); return; }
-    audio.pause(); audio.src = url; audio.loop = track.loop;
+    audio.pause(); previewSourceTrackId.current=track.id; audio.src = url; audio.loop = track.loop;
     audio.volume = Math.max(0,Math.min(1,track.volume * document.settings.masterVolume));
     try { await audio.play(); if (operation === previewOperation.current) setPreviewTrackId(track.id); }
     catch { if (operation === previewOperation.current) setUploadError('이 음원을 재생하지 못했습니다. 파일을 확인해 주세요.'); }
@@ -188,7 +228,7 @@ export function Editor({ show, mediaUrls, onChange, onTitleChange, onSave, savin
       <div className="studio-header-actions">
         <span className={`studio-save-state ${dirty?'is-dirty':''}`} aria-live="polite">{saving?'저장 중':dirty?'변경사항 있음':'모든 변경사항 저장됨'}</span>
         <button className="studio-button studio-save" disabled={saving || !dirty} onClick={()=>{setUploadError(null);void onSave().catch(cause=>setUploadError(cause instanceof Error?cause.message:'저장하지 못했습니다.'));}}>{saving?<Loader2 className="studio-spin" size={17}/>:dirty?<Save size={17}/>:<Check size={17}/>}<span>{saving?'저장 중':'저장'}</span></button>
-        <button className="studio-button studio-primary" onClick={()=>{audioRef.current?.pause();onStart();}} disabled={saving || !document.scenes.length}><Play size={17} fill="currentColor"/><span>공연 시작</span></button>
+        <button className="studio-button studio-primary" onClick={()=>{++previewOperation.current;audioRef.current?.pause();onStart();}} disabled={saving || !!uploading || !document.scenes.length}><Play size={17} fill="currentColor"/><span>공연 시작</span></button>
       </div>
     </header>
     {(error || uploadError) && <div className="studio-error" role="alert"><span>{uploadError || error}</span>{uploadError&&<button onClick={()=>setUploadError(null)} aria-label="알림 닫기"><X size={16}/></button>}</div>}
@@ -228,13 +268,18 @@ export function Editor({ show, mediaUrls, onChange, onTitleChange, onSave, savin
         </div>:<div id="studio-audio-panel" className="studio-inspector-content" role="tabpanel" aria-labelledby="studio-audio-tab">
           {scene&&<section className="studio-inspector-section studio-section-first"><h3>현재 장면 음향</h3><label className="studio-field"><span className="studio-light-label">장면이 시작되면</span><select value={scene.audio.action} onChange={event=>patchScene(scene.id,{audio:{action:event.target.value as Scene['audio']['action'],...(event.target.value==='play'?{trackId:scene.audio.trackId || document.tracks[0]?.id}:{})}})}><option value="stop">음악 서서히 종료</option><option value="play">음악 재생</option><option value="keep">현재 음악 유지</option></select></label>{scene.audio.action==='play'&&<label className="studio-field"><span className="studio-light-label">재생할 음원</span><select value={scene.audio.trackId || ''} onChange={event=>patchScene(scene.id,{audio:{action:'play',trackId:event.target.value||undefined}})}><option value="">음원 선택</option>{document.tracks.map(track=><option key={track.id} value={track.id}>{track.label}</option>)}</select>{!document.tracks.length&&<small>아래에서 먼저 음원을 추가해 주세요.</small>}</label>}</section>}
           <section className="studio-inspector-section"><div className="studio-section-title"><h3>공연 음원 <span>{document.tracks.length}</span></h3><button className="studio-icon-button" disabled={!!uploading} aria-label="음원 추가" title="음원 추가" onClick={()=>trackInput.current?.click()}>{uploading==='audio'?<Loader2 size={17} className="studio-spin"/>:<Plus size={18}/>}</button></div><input className="studio-visually-hidden" ref={trackInput} type="file" accept="audio/*,.mp3,.wav,.m4a,.ogg" tabIndex={-1} aria-label="공연 음원 업로드" onChange={event=>{const file=event.target.files?.[0];event.target.value='';if(file)void uploadTrack(file);}}/>
-            {document.tracks.length===0?<div className="studio-no-tracks"><Music2 size={24}/><p>공연에 사용할 음악을 추가하세요.</p><button className="studio-button" disabled={!!uploading} onClick={()=>trackInput.current?.click()}><Upload size={15}/>음원 업로드</button></div>:<div className="studio-tracks">{document.tracks.map(track=><div key={track.id} className="studio-track"><div className="studio-track-title"><button className={`studio-track-play ${previewTrackId===track.id?'is-playing':''}`} aria-label={`${track.label} ${previewTrackId===track.id?'미리듣기 정지':'미리듣기'}`} onClick={()=>void previewTrack(track)}>{previewTrackId===track.id?<Pause size={14}/>:<Play size={14} fill="currentColor"/>}</button><input value={track.label} aria-label="음원 이름" onChange={event=>patchTrack(track.id,{label:event.target.value})}/><button className="studio-track-delete" aria-label={`${track.label} 음원 삭제`} onClick={()=>setDeleteTarget({kind:'track',id:track.id,title:track.label})}><X size={14}/></button></div><div className="studio-track-source" title={fileLabel(track.source)}>{fileLabel(track.source)}</div><label className="studio-range-label"><span>개별 음량</span><output>{percent(track.volume)}%</output><input type="range" min="0" max="100" value={percent(track.volume)} aria-label={`${track.label} 개별 음량`} onChange={event=>patchTrack(track.id,{volume:Number(event.target.value)/100})}/></label><div className="studio-track-options"><label><input type="checkbox" checked={track.loop} onChange={event=>patchTrack(track.id,{loop:event.target.checked})}/>반복 재생</label><label>시작 페이드 <input type="number" aria-label={`${track.label} 시작 페이드 초`} min="0" max="15" step="0.1" value={track.fadeInMs/1000} onChange={event=>patchTrack(track.id,{fadeInMs:Math.max(0,Math.min(15000,Number(event.target.value)*1000))})}/>초</label></div></div>)}</div>}
+            <input className="studio-visually-hidden" ref={replaceTrackInput} type="file" accept="audio/*,.mp3,.wav,.m4a,.ogg" tabIndex={-1} aria-label="교체할 음원 파일" onChange={event=>{const file=event.target.files?.[0],targetId=replaceTrackTarget.current;event.target.value='';replaceTrackTarget.current=null;if(file&&targetId)void replaceTrack(targetId,file);}}/>
+            {document.tracks.length===0?<div className="studio-no-tracks"><Music2 size={24}/><p>공연에 사용할 음악을 추가하세요.</p><button className="studio-button" disabled={!!uploading} onClick={()=>trackInput.current?.click()}><Upload size={15}/>음원 업로드</button></div>:<div className="studio-tracks">{document.tracks.map(track=><div key={track.id} className="studio-track">
+              <div className="studio-track-title"><button className={`studio-track-play ${previewTrackId===track.id?'is-playing':''}`} disabled={replacingTrackId===track.id} aria-label={`${track.label} ${previewTrackId===track.id?'미리듣기 정지':'미리듣기'}`} onClick={()=>void previewTrack(track)}>{previewTrackId===track.id?<Pause size={14}/>:<Play size={14} fill="currentColor"/>}</button><input value={track.label} aria-label="음원 이름" onChange={event=>patchTrack(track.id,{label:event.target.value})}/><button className="studio-track-delete" aria-label={`${track.label} 음원 삭제`} onClick={()=>setDeleteTarget({kind:'track',id:track.id,title:track.label})}><X size={14}/></button></div>
+              <div className="studio-track-source-row"><div className="studio-track-source" title={fileLabel(track.source)}>{fileLabel(track.source)}</div><button className="studio-track-replace" disabled={!!uploading} aria-label={`${track.label} 음원 교체`} onClick={()=>chooseReplacement(track.id)}>{replacingTrackId===track.id?<Loader2 size={11} className="studio-spin"/>:<Upload size={11}/>}<span>{replacingTrackId===track.id?'교체 중…':'음원 교체'}</span></button></div>
+              <label className="studio-range-label"><span>개별 음량</span><output>{percent(track.volume)}%</output><input type="range" min="0" max="100" value={percent(track.volume)} aria-label={`${track.label} 개별 음량`} onChange={event=>patchTrack(track.id,{volume:Number(event.target.value)/100})}/></label><div className="studio-track-options"><label><input type="checkbox" checked={track.loop} onChange={event=>patchTrack(track.id,{loop:event.target.checked})}/>반복 재생</label><label>시작 페이드 <input type="number" aria-label={`${track.label} 시작 페이드 초`} min="0" max="15" step="0.1" value={track.fadeInMs/1000} onChange={event=>patchTrack(track.id,{fadeInMs:Math.max(0,Math.min(15000,Number(event.target.value)*1000))})}/>초</label></div>
+            </div>)}</div>}
           </section>
           <section className="studio-inspector-section"><h3>전체 음향</h3><label className="studio-range-label"><span>전체 볼륨</span><output>{percent(document.settings.masterVolume)}%</output><input type="range" min="0" max="100" value={percent(document.settings.masterVolume)} aria-label="전체 볼륨" onChange={event=>update(current=>({...current,settings:{...current.settings,masterVolume:Number(event.target.value)/100}}))}/></label><label className="studio-range-label"><span>종료 페이드</span><output>{(document.settings.fadeOutMs/1000).toFixed(1)}초</output><input type="range" min="0.5" max="8" step="0.5" value={document.settings.fadeOutMs/1000} aria-label="전체 음악 종료 페이드 초" onChange={event=>update(current=>({...current,settings:{...current.settings,fadeOutMs:Number(event.target.value)*1000}}))}/></label><p className="studio-settings-help">음악이 끝나거나 종료 큐를 실행할 때 적용돼요. 개별 음량과 전체 볼륨이 함께 적용됩니다.</p></section>
         </div>}
       </aside>
     </main>
-    <audio ref={audioRef} onEnded={()=>setPreviewTrackId(null)} preload="none"/>
+    <audio ref={audioRef} onEnded={()=>{++previewOperation.current;previewSourceTrackId.current=null;setPreviewTrackId(null);}} preload="none"/>
     {deleteTarget&&<div className="studio-dialog-backdrop" onClick={event=>{if(event.target===event.currentTarget)setDeleteTarget(null);}}><section ref={deleteDialogRef} className="studio-delete-dialog" role="dialog" aria-modal="true" aria-labelledby="studio-delete-title" aria-describedby="studio-delete-description"><span className="studio-dialog-icon"><Trash2 size={22}/></span><h2 id="studio-delete-title">{deleteTarget.kind==='scene'?'장면':'음원'}을 삭제할까요?</h2><p id="studio-delete-description"><strong>{deleteTarget.title || '이름 없는 항목'}</strong>{deleteTarget.kind==='scene'?' 장면이 공연에서 삭제됩니다.':' 음원과 이 음원을 재생하는 장면의 연결이 삭제됩니다.'}</p><div><button ref={cancelDeleteRef} className="studio-button" onClick={()=>setDeleteTarget(null)}>취소</button><button className="studio-button studio-confirm-delete" onClick={confirmDelete}>삭제하기</button></div></section></div>}
   </div>;
 }

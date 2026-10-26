@@ -149,6 +149,7 @@ export function AuthPage() {
           {(mode==='login'||mode==='signup')&&<p className="auth-switch">{mode==='login'?'처음 오셨나요?':'이미 계정이 있나요?'} <Link to={mode==='login'?'/signup':'/login'}>{mode==='login'?'회원가입':'로그인'}</Link></p>}
         </>}
         <div className="auth-demo"><Link to="/demo"><Play size={12} fill="currentColor"/>로그인 없이 체험하기<ArrowRight size={14}/></Link></div>
+        <nav className="auth-public-links" aria-label="서비스 안내"><Link to="/about">서비스 소개</Link><Link to="/privacy">개인정보 처리방침</Link><Link to="/terms">이용약관</Link></nav>
       </div>
     </section>
   </main>;

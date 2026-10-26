@@ -141,6 +141,10 @@
 .studio-track-delete{padding:2px;color:#9da8b8!important;display:grid;place-items:center}
 .studio-track-delete:hover{color:#d3454a!important}
 .studio-track-source{color:#a1adbf;font-size:9px;padding:5px 0 4px 32px;text-overflow:ellipsis;overflow:hidden;white-space:nowrap}
+.studio-track-source-row{display:flex;align-items:center;gap:7px;padding-left:32px;margin-top:4px;min-width:0}
+.studio-track-source-row .studio-track-source{min-width:0;flex:1;padding:0}
+.studio-editor .studio-track-replace{display:inline-flex;align-items:center;justify-content:center;gap:4px;flex-shrink:0;padding:4px 5px;border:1px solid #e1eafa;border-radius:4px;background:#f5f8ff;color:#4d73b8;font-size:9px;line-height:1.3;white-space:nowrap}
+.studio-editor .studio-track-replace:hover:not(:disabled){background:#eaf1ff;border-color:#c4d6f7;color:var(--studio-blue)}
 .studio-range-label{display:grid;grid-template-columns:1fr auto;align-items:center;gap:7px;margin:14px 0;font-size:10px;color:#718099}
 .studio-range-label output{font-variant-numeric:tabular-nums;color:#415f8c;font-size:10px}
 .studio-range-label>input{grid-column:1/-1;width:100%;margin:0;accent-color:var(--studio-blue);height:12px;cursor:pointer}
