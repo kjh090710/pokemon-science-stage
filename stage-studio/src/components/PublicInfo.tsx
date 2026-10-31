@@ -8,21 +8,42 @@ const contact = 'junhwangang35@gmail.com';
 const titles: Record<PublicInfoKind, string> = { about: '큐 스튜디오 소개', privacy: '개인정보 처리방침', terms: '이용약관' };
 
 function PublicFooter() {
-  return <footer className="public-footer"><span>큐 스튜디오</span><nav aria-label="서비스 안내"><Link to="/about">서비스 소개</Link><Link to="/privacy">개인정보 처리방침</Link><Link to="/terms">이용약관</Link><a href={`mailto:${contact}`}>문의</a></nav></footer>;
+  return <footer className="public-footer"><Link className="public-footer-brand" to="/about"><Theater size={22} aria-hidden="true"/><span>큐 스튜디오</span></Link><nav aria-label="서비스 안내"><Link to="/about">서비스 소개</Link><Link to="/privacy">개인정보 처리방침</Link><Link to="/terms">이용약관</Link><a href={`mailto:${contact}`}>문의</a></nav></footer>;
+}
+
+const templateScenes = [
+  {name:'박사님의 연구실',file:'00-lab-professor.png'},
+  {name:'숲속의 관문',file:'03-gate-forest-closed.png'},
+  {name:'황금빛 호수',file:'07-lake-gold.png'},
+];
+
+function TemplatePreview() {
+  return <figure className="public-product-preview">
+    <div className="public-preview-label"><span>포켓몬 템플릿</span><span>편집 화면 미리보기</span></div>
+    <div className="public-editor-frame">
+      <div className="public-editor-top"><Theater size={18} aria-hidden="true"/><span>캐치캐치: 포켓몬을 잡아라!</span></div>
+      <div className="public-editor-workspace">
+        <div className="public-editor-scenes"><span className="public-editor-label">장면 예시</span>{templateScenes.map(scene=><div className="public-editor-thumbnail" key={scene.file}><img src={`/templates/pokemon/backgrounds/${scene.file}`} alt="" width="1672" height="941"/><span>{scene.name}</span></div>)}</div>
+        <div className="public-editor-canvas"><span className="public-editor-label">박사님의 연구실</span><img className="public-editor-image" src="/templates/pokemon/backgrounds/00-lab-professor.png" alt="실제 템플릿의 박사님 연구실 장면: 햇살이 비치는 연구실에 피카츄와 이상해씨가 있는 배경" width="1672" height="941" fetchPriority="high"/><div className="public-editor-note"><span>운영 메모</span><p>박사님 소개 · 모험의 시작</p></div></div>
+      </div>
+    </div>
+    <figcaption><span>실제 배경으로 구성한 정적 미리보기입니다.</span><Link to="/demo">편집기에서 체험하기<ArrowRight size={16} aria-hidden="true"/></Link></figcaption>
+  </figure>;
 }
 
 function AboutContent() {
   return <>
     <section className="public-hero" aria-labelledby="public-title">
-      <div className="public-hero-copy"><h1 id="public-title">공연의 배경과 음향을<br/>한곳에서 준비하세요.</h1><p>큐 스튜디오는 연극과 학교 공연을 위한 웹 프레젠테이션 제작 도구입니다. 장면을 만들고, 음악을 연결하고, 별도의 공연 화면으로 무대를 진행할 수 있습니다.</p><div className="public-actions"><Link className="public-button public-button-primary" to="/demo"><Play size={15} fill="currentColor"/>로그인 없이 체험하기</Link><Link className="public-button" to="/login">로그인<ArrowRight size={16}/></Link></div></div>
-      <figure className="public-hero-scene"><img src="/templates/pokemon/backgrounds/07-lake-gold.png" alt="큐 스튜디오의 공연 예시: 숲과 산을 배경으로 한 황금빛 호수"/><figcaption><span>공연 배경 미리보기</span><span>16:9</span></figcaption></figure>
+      <div className="public-hero-copy"><p className="public-product-type">연극을 위한 장면·음향 스튜디오</p><h1 id="public-title">장면을 만들고,<br/>무대를 이어가세요.</h1><p className="public-hero-description">공연의 배경과 음악을 순서대로 준비하세요.<br className="public-desktop-break"/> 제어창에서 클릭하면, 관객의 화면이 바뀝니다.</p><div className="public-actions"><Link className="public-button public-button-primary" to="/demo"><Play size={17} fill="currentColor" aria-hidden="true"/>로그인 없이 체험하기</Link><Link className="public-button public-button-secondary" to="/login">로그인<ArrowRight size={17} aria-hidden="true"/></Link></div></div>
+      <TemplatePreview/>
     </section>
-    <section className="public-features" aria-label="주요 기능">
-      <article><Image size={23} strokeWidth={1.7}/><h2>장면 구성</h2><p>배경 이미지와 운영 메모를 넣고, 장면을 추가·복제·정렬하세요. 암전과 장면 전환도 설정할 수 있습니다.</p></article>
-      <article><Music2 size={23} strokeWidth={1.7}/><h2>장면에 맞춘 음향</h2><p>음원을 올리고 각 장면에 재생·정지 큐를 연결하세요. 음량, 반복 재생, 페이드도 조절할 수 있습니다.</p></article>
-      <article><MonitorPlay size={23} strokeWidth={1.7}/><h2>제어창과 공연 화면</h2><p>운영자는 제어창에서 진행하고, 관객에게는 배경 화면을 보여 주세요. 같은 브라우저에서 공연 화면을 별도로 열 수 있습니다.</p></article>
+    <section className="public-features" aria-labelledby="public-features-title">
+      <div className="public-section-heading"><h2 id="public-features-title">준비부터 진행까지,<br/>공연의 흐름에 맞게.</h2><p>장면과 소리를 한곳에 모으고,<br/>무대에서는 다음 순서에 집중하세요.</p></div>
+      <div className="public-feature-list"><article><Image size={25} strokeWidth={1.7} aria-hidden="true"/><div><h3>장면은 원하는 순서로</h3><p>배경을 넣고 장면을 추가·복제·정렬하세요. 암전과 전환, 운영 메모도 함께 준비할 수 있습니다.</p></div></article>
+      <article><Music2 size={25} strokeWidth={1.7} aria-hidden="true"/><div><h3>음악은 필요한 순간에</h3><p>장면에 음악 재생·정지를 연결하세요. 개별 음량과 반복, 자연스러운 시작·종료 페이드도 조절합니다.</p></div></article>
+      <article><MonitorPlay size={25} strokeWidth={1.7} aria-hidden="true"/><div><h3>운영자와 관객의 화면을 따로</h3><p>제어창에서 다음 장면을 진행하면 별도 공연 화면에 반영됩니다. 운영 메모는 제어창에서 확인하세요.</p></div></article></div>
     </section>
-    <section className="public-save-note"><div><h2>체험부터 내 작품 저장까지</h2><p>로그인 없는 체험은 같은 브라우저에 저장됩니다. 로그인하면 내 작품과 업로드한 이미지·음원을 계정별로 저장하고 다시 편집할 수 있습니다.</p></div><Link to="/signup">계정 만들기<ArrowRight size={16}/></Link></section>
+    <section className="public-save-note"><div><h2>템플릿으로 먼저 시작해 보세요.</h2><p>체험은 같은 브라우저에 저장됩니다. 계정을 만들면 내 배경과 음원을 올리고, 작품을 저장해 다시 편집할 수 있습니다.</p></div><Link to="/signup">계정 만들기<ArrowRight size={18} aria-hidden="true"/></Link></section>
     <p className="public-data-note">Google 로그인은 기본 프로필과 이메일을 사용합니다. 자세한 정보는 <Link to="/privacy">개인정보 처리방침</Link>과 <Link to="/terms">이용약관</Link>에서 확인하세요.</p>
   </>;
 }
@@ -57,5 +78,5 @@ export function PublicInfo({ kind }: { kind: PublicInfoKind }) {
     window.scrollTo(0, 0);
     return () => { document.title = previous; };
   }, [kind]);
-  return <div className={`public-page public-page-${kind}`}><a href="#public-content" className="public-skip">본문으로 건너뛰기</a><header className="public-header"><Link to="/about" className="public-brand" aria-label="큐 스튜디오 소개"><Theater size={29} strokeWidth={1.7}/><span>큐 스튜디오</span></Link><nav aria-label="주요 메뉴"><Link to="/about" aria-current={kind === 'about' ? 'page' : undefined}>서비스 소개</Link><Link className="public-header-login" to="/login">로그인<ArrowRight size={14}/></Link></nav></header><main id="public-content" className="public-content" tabIndex={-1}>{kind === 'about' ? <AboutContent/> : kind === 'privacy' ? <PrivacyContent/> : <TermsContent/>}</main><PublicFooter/></div>;
+  return <div className={`public-page public-page-${kind}`}><a href="#public-content" className="public-skip">본문으로 건너뛰기</a><header className="public-header"><Link to="/about" className="public-brand" aria-label="큐 스튜디오 소개"><Theater size={29} strokeWidth={1.7} aria-hidden="true"/><span>큐 스튜디오</span></Link><nav aria-label="주요 메뉴"><Link to="/about" aria-current={kind === 'about' ? 'page' : undefined}>서비스 소개</Link><Link className="public-header-login" to="/login">로그인<ArrowRight size={16} aria-hidden="true"/></Link></nav></header><main id="public-content" className="public-content" tabIndex={-1}>{kind === 'about' ? <AboutContent/> : kind === 'privacy' ? <PrivacyContent/> : <TermsContent/>}</main><PublicFooter/></div>;
 }

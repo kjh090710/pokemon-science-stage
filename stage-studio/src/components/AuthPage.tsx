@@ -120,8 +120,8 @@ export function AuthPage() {
 
   return <main className="auth-page">
     <aside className="auth-story">
-      <Link to="/" className="auth-brand" aria-label="큐 스튜디오 홈"><Theater size={31} strokeWidth={1.7}/><span>큐 스튜디오</span></Link>
-      <div className="auth-story-content"><h1>공연에만<br/>집중할 수 있도록.</h1><p className="auth-story-description">배경과 음향은 한곳에서 준비하고,<br/>무대에서는 클릭 한 번으로.</p><figure className="auth-scene"><img src="/templates/pokemon/backgrounds/07-lake-gold.png" alt="푸른 숲과 산 아래 펼쳐진 황금빛 호수의 공연 배경"/><figcaption><span className="auth-scene-play"><Play size={12} fill="currentColor"/></span><span>장면 제작부터 무대 진행까지</span></figcaption></figure></div>
+      <div className="auth-story-header"><Link to="/about" className="auth-brand" aria-label="큐 스튜디오 소개"><Theater size={30} strokeWidth={1.7} aria-hidden="true"/><span>큐 스튜디오</span></Link><Link to="/about" className="auth-about-link">서비스 소개<ArrowRight size={16} aria-hidden="true"/></Link></div>
+      <div className="auth-story-content"><h1>배경과 음악을 준비하고,<br/>공연에 집중하세요.</h1><p className="auth-story-description">장면을 만들고 음향을 연결하는 순간부터,<br/>무대에서 다음 순서를 진행할 때까지.</p><figure className="auth-scene"><div className="auth-scene-label"><span>포켓몬 템플릿</span><span>배경 미리보기</span></div><img src="/templates/pokemon/backgrounds/03-gate-forest-closed.png" alt="포켓몬 공연 템플릿의 숲속 관문 배경: 푸른 숲 사이의 아치형 돌문" width="1672" height="941"/><figcaption><span>숲속의 관문</span><Link to="/demo">템플릿 체험하기<ArrowRight size={16} aria-hidden="true"/></Link></figcaption></figure></div>
     </aside>
     <section className="auth-form-side" aria-label={heading}>
       <div className="auth-form-wrap">
