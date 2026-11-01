@@ -1,6 +1,6 @@
 # UI UX Pro Max redesign verification
 
-Date: 2026-10-31 (Asia/Seoul).
+Date: 2026-11-01 (Asia/Seoul).
 
 ## Change boundaries
 
@@ -28,4 +28,9 @@ Date: 2026-10-31 (Asia/Seoul).
 - Vercel MCP returned 404 for that ID/team; the already authenticated CLI is the fallback.
 - Production URL: https://stagecue-studio.vercel.app
 
-Production deployment and browser results will be added after release.
+## Production browser verification
+
+- First redesign build `bf8d21c` deployed READY (`dpl_FZqEuQMxjTAxW57wqdnuVEdiAN7L`) and assigned the existing production URL.
+- The signed-in 3-project library rendered actual project thumbnails and details. Search for `리허설` returned the expected single project; its menu exposed duplicate/delete actions. New-project dialog opened and cancelled at 375px without creating data.
+- Final polish from production inspection: fixed mobile new-project action wrapping, aligned card footers, and strengthened form-control borders using the shared control token.
+- Final release URL, screenshots and runtime checks will be recorded after those small corrections are deployed.
