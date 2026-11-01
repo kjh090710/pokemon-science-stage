@@ -33,4 +33,9 @@ Date: 2026-11-01 (Asia/Seoul).
 - First redesign build `bf8d21c` deployed READY (`dpl_FZqEuQMxjTAxW57wqdnuVEdiAN7L`) and assigned the existing production URL.
 - The signed-in 3-project library rendered actual project thumbnails and details. Search for `리허설` returned the expected single project; its menu exposed duplicate/delete actions. New-project dialog opened and cancelled at 375px without creating data.
 - Final polish from production inspection: fixed mobile new-project action wrapping, aligned card footers, and strengthened form-control borders using the shared control token.
-- Final release URL, screenshots and runtime checks will be recorded after those small corrections are deployed.
+- Final production release: `5968f22`, deployment `dpl_J1gCiUhtvg1rjbUYBL5X18gPTpVq`, READY. Unique URL: https://stagecue-studio-b3sfhn56f-nnhs1.vercel.app ; alias: https://stagecue-studio.vercel.app . Framework: React/Vite. Vercel build duration: 6 seconds.
+- At measured 375px the new-project action stayed on one line (105.25px wide, 48.8px tall), with no document overflow. At 1440px all three project cards measured 455.9px tall and their action footers shared the same top position. Actual thumbnail images loaded.
+- Opened the cloud rehearsal project read-only and selected its lab scene. Preview and settings rendered, 28 scenes were present, and Save remained disabled (no unsaved changes). Browser warning/error log read returned an empty array.
+- Production `/about` showed the new product preview and heading. Vercel error scan for the final deployment returned zero records in the last 10 minutes. This static-site runtime scan does not replace Supabase or browser checks.
+- Screenshots saved locally under ignored `docs/qa/`: `redesign-library-mobile.png`, `redesign-library-desktop.png`, `redesign-editor-desktop.png`, `redesign-about-desktop.png`. Browser viewport override was reset after QA.
+- No full security/accessibility audit, all-28-cue replay, cloud permanent deletion, or new OAuth configuration was performed for this visual change.
