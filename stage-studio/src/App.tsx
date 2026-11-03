@@ -1,5 +1,5 @@
 import {useEffect,useRef,useState,type ReactNode} from 'react';
-import {Link,Navigate,Route,Routes,useNavigate,useParams} from 'react-router-dom';
+import {Link,Navigate,Route,Routes,useLocation,useNavigate,useParams} from 'react-router-dom';
 import {ArrowLeft,Download,Loader2,Theater} from 'lucide-react';
 import {AuthPage} from './components/AuthPage';
 import {Library} from './components/Library';
@@ -58,4 +58,14 @@ function Demo({performance=false}:{performance?:boolean}){
  if(performance)return <Controller show={show} mediaUrls={{}} onBack={()=>nav('/demo')}/>;
  return <div className="demo-shell"><div className="demo-banner"><span>체험 작업실 · 저장한 내용은 이 브라우저에 남습니다.</span><Link to="/login">로그인해서 내 작품 만들기</Link></div><Editor show={show} mediaUrls={{}} onChange={document=>setShow(value=>value?{...value,document}:value)} onTitleChange={title=>setShow(value=>value?{...value,title}:value)} onSave={save} saving={false} dirty={showFingerprint(show)!==saved} error={error||null} onUpload={async()=>{throw new Error('이미지·음원을 업로드하려면 먼저 로그인해 주세요.');}} onBack={()=>nav('/login')} onStart={()=>{void save().then(()=>nav('/demo/control')).catch(()=>{});}}/></div>;
 }
-export function App(){return <Routes><Route path="/" element={<Home/>}/>{(['about','privacy','terms'] as const).map(kind=><Route key={kind} path={'/'+kind} element={<PublicInfo kind={kind}/>}/>)}{['/login','/signup','/forgot-password','/reset-password'].map(path=><Route key={path} path={path} element={<AuthPage/>}/>)}<Route path="/auth/callback" element={<Callback/>}/><Route path="/shows" element={<Protected><Library/></Protected>}/><Route path="/shows/:id" element={<Protected><Workspace/></Protected>}/><Route path="/control/:id" element={<Protected><Workspace performance/></Protected>}/><Route path="/demo" element={<Demo/>}/><Route path="/demo/control" element={<Demo performance/>}/><Route path="/screen/:id" element={<Screen/>}/><Route path="*" element={<Navigate to="/" replace/>}/></Routes>;}
+export function App(){
+ const {pathname}=useLocation();
+ const pageRef=useRef<HTMLDivElement>(null);
+ useEffect(()=>{
+  if(pathname.startsWith('/screen/')||pathname.startsWith('/control/')||pathname==='/demo/control'||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const page=pageRef.current;
+  if(!page?.animate)return;
+  const animation=page.animate([{opacity:0,transform:'translateY(10px)'},{opacity:1,transform:'translateY(0)'}],{duration:240,easing:'cubic-bezier(.2,.7,.3,1)'});
+  return()=>animation.cancel();
+ },[pathname]);
+ return <div ref={pageRef} className="route-shell"><Routes><Route path="/" element={<Home/>}/>{(['about','privacy','terms'] as const).map(kind=><Route key={kind} path={'/'+kind} element={<PublicInfo kind={kind}/>}/>)}{['/login','/signup','/forgot-password','/reset-password'].map(path=><Route key={path} path={path} element={<AuthPage/>}/>)}<Route path="/auth/callback" element={<Callback/>}/><Route path="/shows" element={<Protected><Library/></Protected>}/><Route path="/shows/:id" element={<Protected><Workspace/></Protected>}/><Route path="/control/:id" element={<Protected><Workspace performance/></Protected>}/><Route path="/demo" element={<Demo/>}/><Route path="/demo/control" element={<Demo performance/>}/><Route path="/screen/:id" element={<Screen/>}/><Route path="*" element={<Navigate to="/" replace/>}/></Routes></div>;}
