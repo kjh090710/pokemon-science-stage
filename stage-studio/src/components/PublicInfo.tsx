@@ -34,7 +34,7 @@ function TemplatePreview() {
 function AboutContent() {
   return <>
     <section className="public-hero" aria-labelledby="public-title">
-      <div className="public-hero-copy"><p className="public-product-type">연극을 위한 장면·음향 스튜디오</p><h1 id="public-title">장면을 만들고,<br/>무대를 이어가세요.</h1><p className="public-hero-description">공연의 배경과 음악을 순서대로 준비하세요.<br className="public-desktop-break"/> 제어창에서 클릭하면, 관객의 화면이 바뀝니다.</p><div className="public-actions"><Link className="public-button public-button-primary" to="/demo"><Play size={17} fill="currentColor" aria-hidden="true"/>로그인 없이 체험하기</Link><Link className="public-button public-button-secondary" to="/login">로그인<ArrowRight size={17} aria-hidden="true"/></Link></div></div>
+      <div className="public-hero-copy"><p className="public-product-type">공연을 만드는 사람들의 작업실</p><h1 id="public-title">준비한 장면이<br/>무대가 되는 순간.</h1><p className="public-hero-description">공연의 배경과 음악을 순서대로 준비하세요.<br className="public-desktop-break"/> 제어창에서 클릭하면, 관객의 화면이 바뀝니다.</p><div className="public-actions"><Link className="public-button public-button-primary" to="/demo"><Play size={17} fill="currentColor" aria-hidden="true"/>로그인 없이 체험하기</Link><Link className="public-button public-button-secondary" to="/login">로그인<ArrowRight size={17} aria-hidden="true"/></Link></div></div>
       <TemplatePreview/>
     </section>
     <section className="public-features" aria-labelledby="public-features-title">
