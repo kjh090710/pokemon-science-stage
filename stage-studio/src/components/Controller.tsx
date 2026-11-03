@@ -233,7 +233,7 @@ export function Controller({show,mediaUrls,onBack}:ControllerProps) {
     {mediaPending && <div className="ctl-alert" role="status">공연에 사용할 이미지와 음원을 준비하고 있습니다. 파일을 모두 불러오면 진행 버튼이 활성화됩니다.</div>}
     <section className="ctl-workspace">
       <div className="ctl-run">
-        <div className="ctl-section-heading"><div><span className="ctl-eyebrow">STAGE MONITOR</span><h2>공연 화면 미리보기</h2></div><button className="ctl-text-button" onClick={()=>{if(previewRef.current?.requestFullscreen){void previewRef.current.requestFullscreen().catch(()=>setFullPreview(!fullPreview));}else setFullPreview(!fullPreview);}}><Maximize size={17} aria-hidden="true"/> 크게 보기</button></div>
+        <div className="ctl-section-heading"><div><span className="ctl-eyebrow">현재 화면</span><h2>공연 화면 미리보기</h2></div><button className="ctl-text-button" onClick={()=>{if(previewRef.current?.requestFullscreen){void previewRef.current.requestFullscreen().catch(()=>setFullPreview(!fullPreview));}else setFullPreview(!fullPreview);}}><Maximize size={17} aria-hidden="true"/> 크게 보기</button></div>
         <div className={`ctl-preview ${fullPreview?'ctl-preview-expanded':''}`} data-aspect={show.document.settings.aspectRatio} ref={previewRef} onClick={fullPreview?()=>setFullPreview(false):undefined}>
           <StageCanvas scene={{...current,blackout:current.blackout||live.emergency,transition:live.emergency?{kind:'cut',durationMs:0}:current.transition}} mediaUrls={mediaUrls} aspectRatio={show.document.settings.aspectRatio} revision={live.revision} startAt={live.startAt}/>
           {live.gatePending && <span className="ctl-preview-status">효과음 준비 중…</span>}
@@ -245,9 +245,9 @@ export function Controller({show,mediaUrls,onBack}:ControllerProps) {
         <div className="ctl-stage-help"><span><kbd>←</kbd> 이전 <kbd>→</kbd> <kbd>Space</kbd> 다음</span><span>공연 화면에서 <kbd>F</kbd> 전체 화면</span></div>
       </div>
       <aside className="ctl-audio">
-        <div className="ctl-section-heading"><div><span className="ctl-eyebrow">SOUND DESK</span><h2><Volume2 size={18} aria-hidden="true"/> 음향 재생</h2></div><button className="ctl-text-button" aria-expanded={!settings.collapsed} aria-controls="ctl-sound-controls" onClick={()=>setSettings(state=>({...state,collapsed:!state.collapsed}))}>{settings.collapsed?<ChevronDown size={17} aria-hidden="true"/>:<ChevronUp size={17} aria-hidden="true"/>} {settings.collapsed?'펼치기':'접기'}</button></div>
+        <div className="ctl-section-heading"><div><span className="ctl-eyebrow">음향</span><h2><Volume2 size={18} aria-hidden="true"/> 음향 재생</h2></div><button className="ctl-text-button" aria-expanded={!settings.collapsed} aria-controls="ctl-sound-controls" onClick={()=>setSettings(state=>({...state,collapsed:!state.collapsed}))}>{settings.collapsed?<ChevronDown size={17} aria-hidden="true"/>:<ChevronUp size={17} aria-hidden="true"/>} {settings.collapsed?'펼치기':'접기'}</button></div>
         <div id="ctl-sound-controls" hidden={settings.collapsed}>
-          <p className="ctl-audio-intro">장면을 넘기면 설정한 음악이 함께 재생됩니다. 필요할 때 아래에서 직접 조작하세요.</p>
+          <p className="ctl-audio-intro">장면에 지정한 음악은 자동으로 나옵니다. 따로 틀거나 끄려면 아래 버튼을 누르세요.</p>
           <button className="ctl-prepare" onClick={()=>void engineRef.current?.unlock().then(()=>setAudioStatus('음향 준비 완료')).catch(()=>setAudioStatus('이 브라우저의 소리 재생 권한을 확인해 주세요.'))}><Volume2 size={17} aria-hidden="true"/> 음향 준비</button>
           <div className="ctl-tracks" role="list" aria-label="공연 음원">{show.document.tracks.map((track,index)=><div className="ctl-track" key={track.id} role="listitem"><div className="ctl-track-top"><span className="ctl-track-index">{String(index+1).padStart(2,'0')}</span><div><h3>{track.label}</h3><small>{track.loop?'반복 재생':'한 번 재생'}</small></div><button className="ctl-track-play" onClick={()=>manualPlay(track.id)} aria-label={`${track.label} 재생`} disabled={mediaPending}><Play size={16} aria-hidden="true"/> 재생</button></div><div className="ctl-track-level"><label htmlFor={`ctl-volume-${track.id}`}>개별 음량</label><output htmlFor={`ctl-volume-${track.id}`}>{Math.round((settings.volumes[track.id]??track.volume)*100)}%</output></div><div className="ctl-volume-row"><input id={`ctl-volume-${track.id}`} aria-label={`${track.label} 개별 음량`} aria-valuetext={`${Math.round((settings.volumes[track.id]??track.volume)*100)}%`} type="range" min="0" max="100" value={Math.round((settings.volumes[track.id]??track.volume)*100)} onChange={event=>setSettings(state=>({...state,volumes:{...state.volumes,[track.id]:Number(event.target.value)/100}}))}/></div></div>)}</div>
           <div className="ctl-audio-transport"><button onClick={pauseSound}><Pause size={16} aria-hidden="true"/> 일시정지 / 계속</button><button onClick={stopSound}><Square size={15} aria-hidden="true"/> 서서히 정지</button></div>
@@ -256,6 +256,6 @@ export function Controller({show,mediaUrls,onBack}:ControllerProps) {
         <div className="ctl-audio-status" role="status"><Volume2 size={16} aria-hidden="true"/><span>{audioStatus}</span></div>
       </aside>
     </section>
-    <footer className="ctl-footer"><span>STAGECUE STUDIO</span><p>공연 화면을 빔으로 옮긴 뒤 F 키를 눌러 주세요. 이 제어창은 노트북에 두고 진행하세요.</p></footer>
+    <footer className="ctl-footer"><span>STAGECUE STUDIO</span><p>공연 화면은 빔으로 옮기고 F 키를 눌러 전체 화면으로 띄우세요. 조작은 노트북에서 하면 됩니다.</p></footer>
   </main>;
 }

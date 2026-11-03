@@ -27,23 +27,23 @@ function TemplatePreview() {
         <div className="public-editor-canvas"><span className="public-editor-label">박사님의 연구실</span><img className="public-editor-image" src="/templates/pokemon/backgrounds/00-lab-professor.png" alt="실제 템플릿의 박사님 연구실 장면: 햇살이 비치는 연구실에 피카츄와 이상해씨가 있는 배경" width="1672" height="941" fetchPriority="high"/><div className="public-editor-note"><span>운영 메모</span><p>박사님 소개 · 모험의 시작</p></div></div>
       </div>
     </div>
-    <figcaption><span>실제 배경으로 구성한 정적 미리보기입니다.</span><Link to="/demo">편집기에서 체험하기<ArrowRight size={16} aria-hidden="true"/></Link></figcaption>
+    <figcaption><span>포켓몬 연극의 배경 예시입니다.</span><Link to="/demo">이 공연 열어보기<ArrowRight size={16} aria-hidden="true"/></Link></figcaption>
   </figure>;
 }
 
 function AboutContent() {
   return <>
     <section className="public-hero" aria-labelledby="public-title">
-      <div className="public-hero-copy"><p className="public-product-type">공연을 만드는 사람들의 작업실</p><h1 id="public-title">준비한 장면이<br/>무대가 되는 순간.</h1><p className="public-hero-description">공연의 배경과 음악을 순서대로 준비하세요.<br className="public-desktop-break"/> 제어창에서 클릭하면, 관객의 화면이 바뀝니다.</p><div className="public-actions"><Link className="public-button public-button-primary" to="/demo"><Play size={17} fill="currentColor" aria-hidden="true"/>로그인 없이 체험하기</Link><Link className="public-button public-button-secondary" to="/login">로그인<ArrowRight size={17} aria-hidden="true"/></Link></div></div>
+      <div className="public-hero-copy"><p className="public-product-type">연극 배경과 음향을 한곳에서</p><h1 id="public-title">배경 넘기고,<br/>음악 틀고.</h1><p className="public-hero-description">대본 순서대로 배경과 음악을 넣어 두세요.<br className="public-desktop-break"/> 공연할 때는 다음 버튼으로 장면을 넘기면 됩니다.</p><div className="public-actions"><Link className="public-button public-button-primary" to="/demo"><Play size={17} fill="currentColor" aria-hidden="true"/>로그인 없이 써보기</Link><Link className="public-button public-button-secondary" to="/login">로그인<ArrowRight size={17} aria-hidden="true"/></Link></div></div>
       <TemplatePreview/>
     </section>
     <section className="public-features" aria-labelledby="public-features-title">
-      <div className="public-section-heading"><h2 id="public-features-title">준비부터 진행까지,<br/>공연의 흐름에 맞게.</h2><p>장면과 소리를 한곳에 모으고,<br/>무대에서는 다음 순서에 집중하세요.</p></div>
-      <div className="public-feature-list"><article><Image size={25} strokeWidth={1.7} aria-hidden="true"/><div><h3>장면은 원하는 순서로</h3><p>배경을 넣고 장면을 추가·복제·정렬하세요. 암전과 전환, 운영 메모도 함께 준비할 수 있습니다.</p></div></article>
-      <article><Music2 size={25} strokeWidth={1.7} aria-hidden="true"/><div><h3>음악은 필요한 순간에</h3><p>장면에 음악 재생·정지를 연결하세요. 개별 음량과 반복, 자연스러운 시작·종료 페이드도 조절합니다.</p></div></article>
-      <article><MonitorPlay size={25} strokeWidth={1.7} aria-hidden="true"/><div><h3>운영자와 관객의 화면을 따로</h3><p>제어창에서 다음 장면을 진행하면 별도 공연 화면에 반영됩니다. 운영 메모는 제어창에서 확인하세요.</p></div></article></div>
+      <div className="public-section-heading"><h2 id="public-features-title">대본에 맞춰<br/>미리 준비하세요.</h2><p>배경, 음악, 암전 순서를 정해 두면<br/>공연 중에 따로 찾을 필요가 없습니다.</p></div>
+      <div className="public-feature-list"><article><Image size={25} strokeWidth={1.7} aria-hidden="true"/><div><h3>장면 순서 정하기</h3><p>배경을 넣고 대본에 맞게 순서를 바꾸세요. 암전할 곳이나 조명을 켤 시점도 메모해 둘 수 있습니다.</p></div></article>
+      <article><Music2 size={25} strokeWidth={1.7} aria-hidden="true"/><div><h3>장면에 음악 넣기</h3><p>장면을 넘길 때 음악이 나오거나 꺼지도록 설정할 수 있습니다. 음량과 반복 재생, 소리가 서서히 줄어드는 시간도 조절하세요.</p></div></article>
+      <article><MonitorPlay size={25} strokeWidth={1.7} aria-hidden="true"/><div><h3>공연 화면 따로 띄우기</h3><p>빔에는 배경만 띄우고, 노트북에서는 메모를 보며 조작하세요. 버튼과 메모는 관객에게 보이지 않습니다.</p></div></article></div>
     </section>
-    <section className="public-save-note"><div><h2>템플릿으로 먼저 시작해 보세요.</h2><p>체험은 같은 브라우저에 저장됩니다. 계정을 만들면 내 배경과 음원을 올리고, 작품을 저장해 다시 편집할 수 있습니다.</p></div><Link to="/signup">계정 만들기<ArrowRight size={18} aria-hidden="true"/></Link></section>
+    <section className="public-save-note"><div><h2>만들어 둔 공연으로 연습해 보세요.</h2><p>로그인 없이 포켓몬 연극을 열어 볼 수 있습니다. 체험 중 바꾼 내용은 지금 쓰는 브라우저에 저장됩니다. 내 이미지와 음원을 올리려면 로그인해 주세요.</p></div><Link to="/signup">계정 만들기<ArrowRight size={18} aria-hidden="true"/></Link></section>
     <p className="public-data-note">Google 로그인은 기본 프로필과 이메일을 사용합니다. 자세한 정보는 <Link to="/privacy">개인정보 처리방침</Link>과 <Link to="/terms">이용약관</Link>에서 확인하세요.</p>
   </>;
 }

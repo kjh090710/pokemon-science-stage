@@ -113,28 +113,28 @@ export function AuthPage() {
     } finally { if (operation.current === current) setBusy(null); }
   }
 
-  const heading = mode === 'signup' ? '큐 스튜디오 시작하기' : mode === 'forgot' ? '비밀번호를 잊으셨나요?' : mode === 'reset' ? '새 비밀번호 설정' : '다시 만나 반가워요';
-  const description = mode === 'signup' ? '새로운 공연을 함께 준비해 보세요.' : mode === 'forgot' ? '가입한 이메일로 재설정 링크를 보내드려요.' : mode === 'reset' ? '새로 사용할 비밀번호를 입력해 주세요.' : '이메일 또는 Google 계정으로 로그인하세요.';
+  const heading = mode === 'signup' ? '회원가입' : mode === 'forgot' ? '비밀번호를 잊으셨나요?' : mode === 'reset' ? '새 비밀번호 설정' : '로그인';
+  const description = mode === 'signup' ? '계정을 만들면 공연을 저장하고 다시 열 수 있습니다.' : mode === 'forgot' ? '가입할 때 쓴 이메일을 입력해 주세요.' : mode === 'reset' ? '새로 사용할 비밀번호를 입력해 주세요.' : '이메일 또는 Google 계정으로 로그인하세요.';
   const submitText = mode === 'signup' ? '회원가입' : mode === 'forgot' ? '재설정 링크 보내기' : mode === 'reset' ? '비밀번호 변경' : '로그인';
   const disabled = !!busy || auth.loading;
 
   return <main className="auth-page">
     <aside className="auth-story">
       <div className="auth-story-header"><Link to="/about" className="auth-brand" aria-label="큐 스튜디오 소개"><Theater size={30} strokeWidth={1.7} aria-hidden="true"/><span>큐 스튜디오</span></Link><Link to="/about" className="auth-about-link">서비스 소개<ArrowRight size={16} aria-hidden="true"/></Link></div>
-      <div className="auth-story-content"><h1>배경과 음악을 준비하고,<br/>공연에 집중하세요.</h1><p className="auth-story-description">장면을 만들고 음향을 연결하는 순간부터,<br/>무대에서 다음 순서를 진행할 때까지.</p><figure className="auth-scene"><div className="auth-scene-label"><span>포켓몬 템플릿</span><span>배경 미리보기</span></div><img src="/templates/pokemon/backgrounds/03-gate-forest-closed.png" alt="포켓몬 공연 템플릿의 숲속 관문 배경: 푸른 숲 사이의 아치형 돌문" width="1672" height="941"/><figcaption><span>숲속의 관문</span><Link to="/demo">템플릿 체험하기<ArrowRight size={16} aria-hidden="true"/></Link></figcaption></figure></div>
+      <div className="auth-story-content"><h1>공연에 쓸 배경과 음악,<br/>여기서 준비하세요.</h1><p className="auth-story-description">대본 순서대로 정리해 두고,<br/>공연할 때 한 장면씩 넘기세요.</p><figure className="auth-scene"><div className="auth-scene-label"><span>포켓몬 템플릿</span><span>배경 미리보기</span></div><img src="/templates/pokemon/backgrounds/03-gate-forest-closed.png" alt="포켓몬 공연 템플릿의 숲속 관문 배경: 푸른 숲 사이의 아치형 돌문" width="1672" height="941"/><figcaption><span>숲속의 관문</span><Link to="/demo">예시 공연 열기<ArrowRight size={16} aria-hidden="true"/></Link></figcaption></figure></div>
     </aside>
     <section className="auth-form-side" aria-label={heading}>
       <div className="auth-form-wrap">
         {(mode==='forgot'||mode==='reset')&&<Link className="auth-back-link" to="/login"><ArrowLeft size={14}/>로그인으로 돌아가기</Link>}
         <header className="auth-form-heading"><h2>{heading}</h2><p>{description}</p></header>
-        {auth.loading&&<div className="auth-loading" role="status"><Loader2 className="auth-spin" size={15}/>로그인 상태를 확인하고 있어요.</div>}
+        {auth.loading&&<div className="auth-loading" role="status"><Loader2 className="auth-spin" size={15}/>로그인 확인 중…</div>}
         {error&&<div className="auth-message auth-message-error" role="alert" tabIndex={-1} ref={errorRef}>{error}</div>}
         {googleNotice&&<div className="auth-message auth-message-notice" role="status">Google 로그인 페이지로 이동합니다. 이동하지 않으면 다시 시도해 주세요.</div>}
         {unavailableReset&&!success&&<div className="auth-message auth-message-error" role="alert">유효한 재설정 링크가 필요합니다. 이메일에 있는 최신 링크로 다시 열어 주세요.<Link to="/forgot-password">재설정 링크 다시 받기<ArrowRight size={13}/></Link></div>}
         {success?<div className="auth-success" role="status">
           <span className="auth-success-icon">{success==='password-updated'?<CheckCircle2 size={29}/>:<Mail size={28}/>}</span>
           <h3>{success==='confirmation'?'이메일을 확인해 주세요':success==='email-sent'?'재설정 안내를 요청했어요':'비밀번호를 변경했어요'}</h3>
-          {success==='confirmation'?<p><strong>{email.trim()}</strong> 주소로 보낸 인증 메일을 확인해 주세요. 메일의 링크를 누르면 회원가입을 마칠 수 있어요.</p>:success==='email-sent'?<p><strong>{email.trim()}</strong> 주소로 재설정 안내를 요청했습니다. 가입된 계정이라면 메일이 도착해요. 메일함과 스팸함을 확인해 주세요.</p>:<p>새 비밀번호가 적용되었습니다.<br/>내 작품에서 공연 준비를 이어가세요.</p>}
+          {success==='confirmation'?<p><strong>{email.trim()}</strong> 주소로 보낸 인증 메일을 확인해 주세요. 메일의 링크를 누르면 회원가입을 마칠 수 있어요.</p>:success==='email-sent'?<p><strong>{email.trim()}</strong> 주소로 재설정 안내를 요청했습니다. 가입된 계정이라면 메일이 도착해요. 메일함과 스팸함을 확인해 주세요.</p>:<p>새 비밀번호가 적용되었습니다.<br/>내 작품으로 돌아가면 됩니다.</p>}
           <Link className="auth-primary auth-success-action" to={success==='password-updated'?'/shows':'/login'}>{success==='password-updated'?'내 작품으로':'로그인으로 돌아가기'}<ArrowRight size={15}/></Link>
           {success==='email-sent'&&<button className="auth-secondary-link" onClick={()=>{setSuccess(null);setError(null);}}>다른 이메일로 요청하기</button>}
         </div>:<>
@@ -148,7 +148,7 @@ export function AuthPage() {
           </form>
           {(mode==='login'||mode==='signup')&&<p className="auth-switch">{mode==='login'?'처음 오셨나요?':'이미 계정이 있나요?'} <Link to={mode==='login'?'/signup':'/login'}>{mode==='login'?'회원가입':'로그인'}</Link></p>}
         </>}
-        <div className="auth-demo"><Link to="/demo"><Play size={12} fill="currentColor"/>로그인 없이 체험하기<ArrowRight size={14}/></Link></div>
+        <div className="auth-demo"><Link to="/demo"><Play size={12} fill="currentColor"/>로그인 없이 써보기<ArrowRight size={14}/></Link></div>
         <nav className="auth-public-links" aria-label="서비스 안내"><Link to="/about">서비스 소개</Link><Link to="/privacy">개인정보 처리방침</Link><Link to="/terms">이용약관</Link></nav>
       </div>
     </section>
